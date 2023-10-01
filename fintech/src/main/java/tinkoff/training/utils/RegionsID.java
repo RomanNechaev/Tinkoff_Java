@@ -1,4 +1,4 @@
-package tinkoff.training;
+package tinkoff.training.utils;
 
 import java.util.Map;
 import java.util.UUID;
