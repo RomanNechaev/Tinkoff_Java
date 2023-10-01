@@ -1,11 +1,17 @@
 plugins {
     id("java")
+    id("org.springframework.boot") version "3.1.4"
+    id("io.spring.dependency-management") version "1.1.3"
     application
 }
 
 application {
     mainClass.set("tinkoff.training.Main")
 }
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+}
+
 group = "tinkoff.training"
 version = "1.0-SNAPSHOT"
 
@@ -14,6 +20,13 @@ repositories {
 }
 
 dependencies {
+    implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
+    implementation("io.swagger.core.v3:swagger-annotations:2.2.16")
+
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 
