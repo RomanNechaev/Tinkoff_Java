@@ -76,6 +76,7 @@ public interface WeatherService {
 
     /**
      * Получить данные о погоде в городе name
+     *
      * @param name - название города
      * @return объект Weather
      * @see Weather

@@ -1,6 +1,5 @@
 package tinkoff.training.repositories;
 
-import org.springframework.stereotype.Repository;
 import tinkoff.training.entities.Weather;
 
 import java.util.List;
