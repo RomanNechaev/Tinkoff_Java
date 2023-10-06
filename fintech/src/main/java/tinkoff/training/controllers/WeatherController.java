@@ -27,7 +27,6 @@ public class WeatherController {
             }
     )
 
-
     @GetMapping("{city}")
     public ResponseEntity<Double> getTemperatureByCityName(@PathVariable String city) {
         return ResponseEntity.ok(weatherService.getWeatherByCityName(city).getTemperatureValue());
@@ -37,7 +36,8 @@ public class WeatherController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "weather create successfully"),
                     @ApiResponse(responseCode = "400", description = "invalid parameters to create"),
-                    @ApiResponse(responseCode = "409", description = "weather data already exists")
+                    @ApiResponse(responseCode = "409", description = "weather data already exists"),
+                    @ApiResponse(responseCode = "422", description = "city name non match with data request")
             }
     )
 
@@ -51,8 +51,10 @@ public class WeatherController {
                     @ApiResponse(responseCode = "200", description = "weather update successfully"),
                     @ApiResponse(responseCode = "400", description = "invalid parameters to update"),
                     @ApiResponse(responseCode = "404", description = "City not found"),
+                    @ApiResponse(responseCode = "422", description = "city name non match with data request")
             }
     )
+
     @PutMapping("{city}")
     public ResponseEntity<Weather> updateWeatherByCityName(@PathVariable String city, @RequestBody WeatherModel weatherModel) {
         return ResponseEntity.ok(weatherService.update(city, weatherModel));

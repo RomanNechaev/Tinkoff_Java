@@ -8,9 +8,11 @@ import tinkoff.training.repositories.WeatherRepository;
 import tinkoff.training.services.WeatherService;
 import tinkoff.training.utils.exceptions.EntityExistsException;
 import tinkoff.training.utils.exceptions.EntityNotFoundException;
+import tinkoff.training.utils.exceptions.NonMatchDataException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -31,6 +33,7 @@ public class WeatherServiceImpl implements WeatherService {
     public List<String> findRegionsAboveTemperature(double temperature) {
         return weatherRepository.findAll().stream().filter(x -> x.getTemperatureValue() > temperature).map(Weather::getName).toList();
     }
+
     public Map<UUID, List<Double>> idToTemperature() {
         return weatherRepository.findAll().stream().collect(Collectors.groupingBy(Weather::getId, Collectors.mapping(Weather::getTemperatureValue, Collectors.toList())));
     }
@@ -44,6 +47,7 @@ public class WeatherServiceImpl implements WeatherService {
         if (weatherRepository.existsByName(city)) {
             throw new EntityExistsException("Weather Entity already exists!");
         }
+        checkMatchRegionName(city, weatherModel);
         Weather weather = new Weather(weatherModel.name(), weatherModel.temperatureValue(), weatherModel.date(), weatherModel.time());
         weatherRepository.save(weather);
         return weather;
@@ -54,6 +58,7 @@ public class WeatherServiceImpl implements WeatherService {
         Weather weather = weatherRepository
                 .findByName(weatherModel.name())
                 .orElseThrow(() -> new EntityNotFoundException("Entity not found!"));
+        checkMatchRegionName(city, weatherModel);
         return weatherRepository.update(new Weather(weather.getName(), weatherModel.temperatureValue(), weatherModel.date(), weatherModel.time()));
 
     }
@@ -68,5 +73,9 @@ public class WeatherServiceImpl implements WeatherService {
         return weatherRepository.findByName(name).orElseThrow(() -> new EntityNotFoundException("Entity not found!"));
     }
 
-
+    private void checkMatchRegionName(String city, WeatherModel weatherModel) {
+        if (!Objects.equals(city, weatherModel.name())) {
+            throw new NonMatchDataException("Данные названия региона в модели и запросе не совпадают!");
+        }
+    }
 }
