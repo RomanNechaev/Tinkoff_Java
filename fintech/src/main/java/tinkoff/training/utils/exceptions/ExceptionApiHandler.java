@@ -11,18 +11,19 @@ import tinkoff.training.models.ErrorMessage;
  */
 @RestControllerAdvice
 public class ExceptionApiHandler {
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorMessage> notFoundException(EntityNotFoundException exception) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorMessage(exception.getMessage()));
-    }
-
-    @ExceptionHandler(EntityExistsException.class)
-    public ResponseEntity<ErrorMessage> entityExistsException(EntityExistsException exception) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorMessage(exception.getMessage()));
-    }
-
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorMessage> illegalArgumentException(IllegalArgumentException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessage(exception.getMessage()));
     }
+
+    @ExceptionHandler(ApplicationException.class)
+    public ResponseEntity<ErrorMessage> handleApplicationException(ApplicationException e) {
+        return ResponseEntity.status(e.getTargetStatus()).body(new ErrorMessage(e.getErrorMessage()));
+    }
+
+    @ExceptionHandler(Throwable.class)
+    public ResponseEntity<ErrorMessage> handleException(Throwable e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorMessage("Неизвестная ошибка"));
+    }
+
 }
