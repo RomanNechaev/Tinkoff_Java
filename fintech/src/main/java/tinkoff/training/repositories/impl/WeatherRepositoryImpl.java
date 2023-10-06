@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
 @Repository
 public class WeatherRepositoryImpl implements WeatherRepository {
 
@@ -50,8 +51,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
         }
         Weather oldWeather = findByName(weather.getName()).get();
         int index = weatherList.indexOf(oldWeather);
-        weatherList.remove(oldWeather);
-        weatherList.add(index, weather);
+        weatherList.set(index, weather);
         return weather;
     }
 
