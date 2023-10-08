@@ -1,7 +1,7 @@
-package tinkoff.training;
+package tinkoff.training.entities;
 
 import lombok.Getter;
-import lombok.Setter;
+import tinkoff.training.utils.RegionsID;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
