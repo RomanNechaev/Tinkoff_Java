@@ -1,7 +1,7 @@
 package tinkoff.training.services;
 
 import org.springframework.stereotype.Service;
-import tinkoff.training.utils.exceptions.*;
+import tinkoff.training.utils.exceptions.ApiException;
 import tinkoff.training.utils.exceptions.application.InternalApplicationError;
 import tinkoff.training.utils.exceptions.client.IncorrectQueryException;
 import tinkoff.training.utils.exceptions.client.NotSupportedEncodingException;

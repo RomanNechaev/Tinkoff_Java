@@ -1,7 +1,7 @@
 package tinkoff.training.services;
 
 import tinkoff.training.entities.Weather;
-import tinkoff.training.services.crud.*;
+import tinkoff.training.services.crud.CrudOperation;
 
 /**
  * Функционал для объектов Weather

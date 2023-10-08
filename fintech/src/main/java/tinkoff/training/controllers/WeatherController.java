@@ -23,6 +23,7 @@ public class WeatherController {
         this.weatherService = weatherService;
         this.weatherApiService = weatherApiService;
     }
+
     @GetMapping("/info")
     @RateLimiter(name = "info")
     public ResponseEntity<WeatherModel> getWeatherByCityName(@PathVariable String city) {

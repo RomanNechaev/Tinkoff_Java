@@ -1,4 +1,4 @@
 package tinkoff.training.services.crud;
 
-public interface CrudOperation extends CreateOperation,UpdateOperation,ReadOperation,DeleteOperation {
+public interface CrudOperation extends CreateOperation, UpdateOperation, ReadOperation, DeleteOperation {
 }

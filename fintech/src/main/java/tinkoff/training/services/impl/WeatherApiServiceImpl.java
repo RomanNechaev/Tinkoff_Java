@@ -2,7 +2,6 @@ package tinkoff.training.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 import tinkoff.training.client.WeatherApiClient;
 import tinkoff.training.models.WeatherModel;
 import tinkoff.training.services.ExceptionWeatherApiHandler;

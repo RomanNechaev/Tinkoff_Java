@@ -10,7 +10,6 @@ import reactor.core.publisher.Mono;
 import tinkoff.training.config.WeatherClientProperties;
 import tinkoff.training.models.WeatherApiError;
 import tinkoff.training.models.WeatherApiResponse;
-import tinkoff.training.models.WeatherModel;
 import tinkoff.training.utils.exceptions.ApiException;
 
 
@@ -30,7 +29,7 @@ public class WeatherApiClient {
         return webClient.get()
                 .uri(properties.getCurrentWeatherUri())
                 .attribute("key", properties.getKey())
-                .attribute("q",city)
+                .attribute("q", city)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, response -> {
