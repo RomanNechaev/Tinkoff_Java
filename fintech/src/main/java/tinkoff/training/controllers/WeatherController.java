@@ -1,5 +1,6 @@
 package tinkoff.training.controllers;
 
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,17 +8,25 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tinkoff.training.entities.Weather;
 import tinkoff.training.models.WeatherModel;
+import tinkoff.training.services.WeatherApiService;
 import tinkoff.training.services.WeatherService;
 
 @RestController
-@RequestMapping("/api/weather")
+@RequestMapping("/api/weather/{city}")
 public class WeatherController {
 
     private final WeatherService weatherService;
+    private final WeatherApiService weatherApiService;
 
     @Autowired
-    public WeatherController(WeatherService weatherService) {
+    public WeatherController(WeatherService weatherService, WeatherApiService weatherApiService) {
         this.weatherService = weatherService;
+        this.weatherApiService = weatherApiService;
+    }
+    @GetMapping("/info")
+    @RateLimiter(name = "info")
+    public ResponseEntity<WeatherModel> getWeatherByCityName(@PathVariable String city) {
+        return ResponseEntity.ok(weatherApiService.getWeatherByCityName(city));
     }
 
     @Operation(description = "Get current temperature for city",
@@ -27,7 +36,7 @@ public class WeatherController {
             }
     )
 
-    @GetMapping("{city}")
+    @GetMapping
     public ResponseEntity<Double> getTemperatureByCityName(@PathVariable String city) {
         return ResponseEntity.ok(weatherService.getWeatherByCityName(city).getTemperatureValue());
     }
@@ -41,7 +50,7 @@ public class WeatherController {
             }
     )
 
-    @PostMapping("{city}")
+    @PostMapping
     public ResponseEntity<Weather> addWeatherByCityName(@PathVariable String city, @RequestBody WeatherModel weatherModel) {
         return ResponseEntity.ok(weatherService.create(city, weatherModel));
     }
@@ -55,7 +64,7 @@ public class WeatherController {
             }
     )
 
-    @PutMapping("{city}")
+    @PutMapping
     public ResponseEntity<Weather> updateWeatherByCityName(@PathVariable String city, @RequestBody WeatherModel weatherModel) {
         return ResponseEntity.ok(weatherService.update(city, weatherModel));
     }
@@ -66,7 +75,7 @@ public class WeatherController {
             }
     )
 
-    @DeleteMapping("{city}")
+    @DeleteMapping
     public ResponseEntity<Void> deleteWeatherByCityName(@PathVariable String city) {
         weatherService.delete(city);
         return ResponseEntity.ok().build();

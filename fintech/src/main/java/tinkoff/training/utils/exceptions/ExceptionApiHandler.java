@@ -1,5 +1,6 @@
 package tinkoff.training.utils.exceptions;
 
+import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,9 +23,15 @@ public class ExceptionApiHandler {
     public ResponseEntity<ErrorMessage> handleApplicationException(ApplicationException e) {
         return ResponseEntity.status(e.getTargetStatus()).body(new ErrorMessage(e.getErrorMessage()));
     }
+
     @ExceptionHandler(ClientApiException.class)
     public ResponseEntity<ErrorMessage> handleClientApiException(ClientApiException e) {
         return ResponseEntity.status(e.getTargetStatus()).body(new ErrorMessage(e.getErrorMessage()));
+    }
+
+    @ExceptionHandler({RequestNotPermitted.class})
+    public ResponseEntity<ErrorMessage> handleClientApiException(RequestNotPermitted e) {
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(new ErrorMessage(e.getMessage()));
     }
 
     @ExceptionHandler(Throwable.class)
