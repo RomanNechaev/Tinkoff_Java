@@ -6,9 +6,9 @@ import tinkoff.training.entities.Weather;
 import tinkoff.training.models.WeatherModel;
 import tinkoff.training.repositories.WeatherRepository;
 import tinkoff.training.services.WeatherService;
-import tinkoff.training.utils.exceptions.EntityExistsException;
-import tinkoff.training.utils.exceptions.EntityNotFoundException;
-import tinkoff.training.utils.exceptions.NonMatchDataException;
+import tinkoff.training.utils.exceptions.application.EntityExistsException;
+import tinkoff.training.utils.exceptions.application.EntityNotFoundException;
+import tinkoff.training.utils.exceptions.application.NonMatchDataException;
 
 import java.util.List;
 import java.util.Map;

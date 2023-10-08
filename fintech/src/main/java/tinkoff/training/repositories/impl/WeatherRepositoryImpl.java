@@ -3,7 +3,7 @@ package tinkoff.training.repositories.impl;
 import org.springframework.stereotype.Repository;
 import tinkoff.training.entities.Weather;
 import tinkoff.training.repositories.WeatherRepository;
-import tinkoff.training.utils.exceptions.EntityNotFoundException;
+import tinkoff.training.utils.exceptions.application.EntityNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
