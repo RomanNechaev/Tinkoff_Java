@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import tinkoff.training.models.ErrorMessage;
+import tinkoff.training.utils.exceptions.application.ApplicationException;
+import tinkoff.training.utils.exceptions.client.ClientApiException;
 
 /**
  * Перехватывает и обрабатывает ошибоки, которые могут возникуть в приложении
@@ -18,6 +20,10 @@ public class ExceptionApiHandler {
 
     @ExceptionHandler(ApplicationException.class)
     public ResponseEntity<ErrorMessage> handleApplicationException(ApplicationException e) {
+        return ResponseEntity.status(e.getTargetStatus()).body(new ErrorMessage(e.getErrorMessage()));
+    }
+    @ExceptionHandler(ClientApiException.class)
+    public ResponseEntity<ErrorMessage> handleClientApiException(ClientApiException e) {
         return ResponseEntity.status(e.getTargetStatus()).body(new ErrorMessage(e.getErrorMessage()));
     }
 

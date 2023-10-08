@@ -1,4 +1,4 @@
-package tinkoff.training.utils.exceptions;
+package tinkoff.training.utils.exceptions.application;
 
 import lombok.Getter;
 import lombok.Setter;
