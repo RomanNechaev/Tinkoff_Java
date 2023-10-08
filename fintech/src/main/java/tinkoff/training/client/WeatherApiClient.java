@@ -9,6 +9,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import tinkoff.training.config.WeatherClientProperties;
 import tinkoff.training.models.WeatherApiError;
+import tinkoff.training.models.WeatherApiResponse;
 import tinkoff.training.models.WeatherModel;
 import tinkoff.training.utils.exceptions.ApiException;
 
@@ -25,10 +26,11 @@ public class WeatherApiClient {
         this.properties = properties;
     }
 
-    public Mono<WeatherModel> getCurrentWeather(String city) {
+    public Mono<WeatherApiResponse> getCurrentWeather(String city) {
         return webClient.get()
                 .uri(properties.getCurrentWeatherUri())
-                .attribute("key", city)
+                .attribute("key", properties.getKey())
+                .attribute("q",city)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, response -> {
@@ -36,6 +38,6 @@ public class WeatherApiClient {
                     return response.bodyToMono(WeatherApiError.class)
                             .flatMap(error -> Mono.error(new ApiException(error, httpCode)));
                 })
-                .bodyToMono(WeatherModel.class);
+                .bodyToMono(WeatherApiResponse.class);
     }
 }
