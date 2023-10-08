@@ -1,0 +1,42 @@
+plugins {
+    id("java")
+    application
+}
+
+application {
+    mainClass.set("tinkoff.training.Main")
+}
+group = "tinkoff.training"
+version = "1.0-SNAPSHOT"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation(platform("org.junit:junit-bom:5.9.1"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+
+    compileOnly("org.projectlombok:lombok:1.18.30")
+    annotationProcessor("org.projectlombok:lombok:1.18.30")
+
+    testCompileOnly("org.projectlombok:lombok:1.18.30")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.30")
+}
+
+tasks.test {
+    useJUnitPlatform()
+}
+
+tasks.create("fatjarCompile", Jar::class) {
+    group = "my tasks"
+    description = "Creates a self-contained fat JAR of the application that can be run."
+    manifest.attributes["Main-Class"] = "tinkoff.training.Main"
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    val dependencies = configurations
+            .runtimeClasspath
+            .get()
+            .map(::zipTree)
+    from(dependencies)
+    with(tasks.jar.get())
+}
