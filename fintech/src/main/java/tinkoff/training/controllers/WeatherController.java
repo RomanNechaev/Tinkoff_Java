@@ -3,9 +3,10 @@ package tinkoff.training.controllers;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 import tinkoff.training.entities.Weather;
 import tinkoff.training.models.WeatherModel;
 import tinkoff.training.services.WeatherApiService;
@@ -13,21 +14,16 @@ import tinkoff.training.services.WeatherService;
 
 @RestController
 @RequestMapping("/api/weather/{city}")
+@RequiredArgsConstructor
 public class WeatherController {
 
     private final WeatherService weatherService;
     private final WeatherApiService weatherApiService;
 
-    @Autowired
-    public WeatherController(WeatherService weatherService, WeatherApiService weatherApiService) {
-        this.weatherService = weatherService;
-        this.weatherApiService = weatherApiService;
-    }
-
     @GetMapping("/info")
     @RateLimiter(name = "info")
-    public ResponseEntity<WeatherModel> getWeatherByCityName(@PathVariable String city) {
-        return ResponseEntity.ok(weatherApiService.getWeatherByCityName(city));
+    public Mono<ResponseEntity<WeatherModel>> getWeatherByCityName(@PathVariable String city) {
+        return weatherApiService.getWeatherByCityName(city).map(ResponseEntity::ok);
     }
 
     @Operation(description = "Get current temperature for city",

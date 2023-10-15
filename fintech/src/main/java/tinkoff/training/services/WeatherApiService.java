@@ -1,7 +1,8 @@
 package tinkoff.training.services;
 
+import reactor.core.publisher.Mono;
 import tinkoff.training.models.WeatherModel;
 
 public interface WeatherApiService {
-    WeatherModel getWeatherByCityName(String name);
+    Mono<WeatherModel> getWeatherByCityName(String name);
 }
