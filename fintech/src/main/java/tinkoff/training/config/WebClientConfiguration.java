@@ -1,26 +1,25 @@
 package tinkoff.training.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Objects;
 
 @Configuration
-@PropertySource("classpath:client.properties")
 public class WebClientConfiguration {
-    final Environment environment;
+    private final WeatherClientProperties weatherClientProperties;
 
-    public WebClientConfiguration(Environment environment) {
-        this.environment = environment;
+    @Autowired
+    public WebClientConfiguration(WeatherClientProperties weatherClientProperties) {
+        this.weatherClientProperties = weatherClientProperties;
     }
 
-    @Bean(name = "default")
-    public WebClient webCLient() {
+    @Bean
+    public WebClient webClient() {
         return WebClient.builder()
-                .baseUrl(Objects.requireNonNull(environment.getProperty("api.base_url")))
+                .baseUrl(Objects.requireNonNull(weatherClientProperties.getBaseUrl()))
                 .build();
     }
 }
