@@ -1,7 +1,6 @@
 package tinkoff.training.client;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -14,25 +13,18 @@ import tinkoff.training.utils.exceptions.ApiException;
 
 
 @Component
+@RequiredArgsConstructor
 public class WeatherApiClient {
+
     private final WebClient webClient;
     private final WeatherClientProperties properties;
 
-
-    @Autowired
-    public WeatherApiClient(@Qualifier(value = "default") WebClient webClient, WeatherClientProperties properties) {
-        this.webClient = webClient;
-        this.properties = properties;
-    }
-
     public Mono<WeatherApiResponse> getCurrentWeather(String city) {
         return webClient.get()
-                .uri(properties.getCurrentWeatherUri())
-                .attribute("key", properties.getKey())
-                .attribute("q", city)
+                .uri(properties.getCurrentWeatherUri(), city, properties.getKey())
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .onStatus(HttpStatusCode::is4xxClientError, response -> {
+                .onStatus(HttpStatusCode::isError, response -> {
                     int httpCode = response.statusCode().value();
                     return response.bodyToMono(WeatherApiError.class)
                             .flatMap(error -> Mono.error(new ApiException(error, httpCode)));
