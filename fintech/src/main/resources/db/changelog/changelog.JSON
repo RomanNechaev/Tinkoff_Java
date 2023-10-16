@@ -15,11 +15,10 @@
                 {
                   "column": {
                     "name": "id",
-                    "type": "int",
+                    "type": "BIGINT",
                     "autoIncrement": true,
                     "constraints": {
-                      "primaryKey": true,
-                      "nullable": false
+                      "primaryKey": true
                     }
                   }
                 },
@@ -28,7 +27,6 @@
                     "name": "name",
                     "type": "varchar(20)",
                     "constraints": {
-                      "nullable": false,
                       "unique": true
                     }
                   }
@@ -111,11 +109,10 @@
                 {
                   "column": {
                     "name": "id",
-                    "type": "int",
+                    "type": "BIGINT",
                     "autoIncrement": true,
                     "constraints": {
-                      "primaryKey": true,
-                      "nullable": false
+                      "primaryKey": true
                     }
                   }
                 },
@@ -124,7 +121,6 @@
                     "name": "type",
                     "type": "varchar(10)",
                     "constraints": {
-                      "nullable": false
                     }
                   }
                 }
@@ -219,39 +215,29 @@
                 {
                   "column": {
                     "name": "id",
-                    "type": "int",
+                    "type": "BIGINT",
                     "autoIncrement": true,
                     "constraints": {
-                      "primaryKey": true,
-                      "nullable": false
+                      "primaryKey": true
                     }
                   }
                 },
                 {
                   "column": {
                     "name": "temperature",
-                    "type": "double",
-                    "constraints": {
-                      "nullable": false
-                    }
+                    "type": "double"
                   }
                 },
                 {
                   "column": {
                     "name": "city_id",
-                    "type": "int",
-                    "constraints": {
-                      "nullable": false
-                    }
+                    "type": "BIGINT"
                   }
                 },
                 {
                   "column": {
                     "name": "weather_type_id",
-                    "type": "int",
-                    "constraints": {
-                      "nullable": false
-                    }
+                    "type": "BIGINT"
                   }
                 }
               ]
@@ -329,6 +315,43 @@
             }
           }
         ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "addAutoIncrement",
+        "author": "romenka",
+        "changes": [
+          {
+            "addAutoIncrement": {
+              "columnDataType": "BIGINT",
+              "columnName": "id",
+              "defaultOnNull": false,
+              "generationType": "ALWAYS",
+              "incrementBy": 10,
+              "tableName": "city"
+            }
+          },
+          {
+            "addAutoIncrement": {
+              "columnDataType": "BIGINT",
+              "columnName": "id",
+              "defaultOnNull": false,
+              "generationType": "ALWAYS",
+              "incrementBy": 10,
+              "tableName": "weather"
+            }
+          },
+          {
+            "addAutoIncrement": {
+              "columnDataType": "BIGINT",
+              "columnName": "id",
+              "defaultOnNull": false,
+              "generationType": "ALWAYS",
+              "incrementBy": 8,
+              "tableName": "weather_directory"
+            }
+          }]
       }
     }
   ]
