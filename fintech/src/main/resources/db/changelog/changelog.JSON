@@ -119,7 +119,7 @@
                 {
                   "column": {
                     "name": "type",
-                    "type": "varchar(10)",
+                    "type": "varchar(20)",
                     "constraints": {
                     }
                   }
@@ -264,7 +264,7 @@
             "addForeignKeyConstraint": {
               "baseColumnNames": "weather_type_id",
               "baseTableName": "weather",
-              "constraintName": "fk_weather",
+              "constraintName": "fk_weather_type",
               "referencedColumnNames": "id",
               "referencedTableName": "weather_directory"
             }
@@ -282,7 +282,7 @@
           },
           {
             "sqlCheck": {
-              "expectedResult": 4,
+              "expectedResult": 5,
               "sql": "SELECT COUNT(*) FROM weather_directory"
             }
           }
@@ -317,41 +317,147 @@
         ]
       }
     },
+
     {
       "changeSet": {
-        "id": "addAutoIncrement",
+        "id": "add_column",
         "author": "romenka",
         "changes": [
           {
-            "addAutoIncrement": {
-              "columnDataType": "BIGINT",
-              "columnName": "id",
-              "defaultOnNull": false,
-              "generationType": "ALWAYS",
-              "incrementBy": 10,
-              "tableName": "city"
-            }
-          },
-          {
-            "addAutoIncrement": {
-              "columnDataType": "BIGINT",
-              "columnName": "id",
-              "defaultOnNull": false,
-              "generationType": "ALWAYS",
-              "incrementBy": 10,
+            "addColumn": {
+              "columns": [
+                {
+                  "column": {
+                    "name": "date",
+                    "type": "DATE"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "time",
+                    "type": "TIME"
+                  }
+                }
+              ],
               "tableName": "weather"
             }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "insert-into-weather2",
+        "author": "romenka",
+        "preConditions": [
+          {
+            "onFail": "WARN"
           },
           {
-            "addAutoIncrement": {
-              "columnDataType": "BIGINT",
-              "columnName": "id",
-              "defaultOnNull": false,
-              "generationType": "ALWAYS",
-              "incrementBy": 8,
-              "tableName": "weather_directory"
+            "sqlCheck": {
+              "expectedResult": 5,
+              "sql": "SELECT COUNT(*) FROM weather_directory"
             }
-          }]
+          }
+        ],
+        "comment": "Check that there are 5 types in weather table before adding a weather.",
+        "changes": [
+          {
+            "insert": {
+              "columns": [
+                {
+                  "column": {
+                    "name": "temperature",
+                    "value": "19.0"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "city_id",
+                    "value": 2
+                  }
+                },
+                {
+                  "column": {
+                    "name": "weather_type_id",
+                    "value": 4
+                  }
+                },
+                {
+                  "column": {
+                    "name": "date",
+                    "value": "2023-10-21"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "time",
+                    "value": "17:02"
+                  }
+                }
+              ],
+              "tableName": "weather"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet":{
+        "id":"createIndex",
+        "author":"romenka",
+        "changes":[
+          {
+            "createIndex":{
+              "clustered":true,
+              "columns":[
+                {
+                  "column":{
+                    "name":"name"
+                  }
+                }
+              ],
+              "indexName":"idx_city_name",
+              "tableName":"city",
+              "unique":true
+            }
+          },
+          {
+            "createIndex":{
+              "clustered":true,
+              "columns":[
+                {
+                  "column":{
+                    "name":"type"
+                  }
+                }
+              ],
+              "indexName":"idx_weather_type",
+              "tableName":"weather_directory",
+              "unique":false
+            }
+          },
+          {
+            "createIndex":{
+              "clustered":false,
+              "columns":[
+                {
+                  "column":{
+                    "name":"city_id"
+                  }
+                },
+                {
+                  "column":{
+                    "name":"weather_type_id"
+                  }
+                }
+              ],
+              "indexName":"idx_weather",
+              "tableName":"weather",
+              "unique":false
+            }
+          }
+        ]
       }
     }
   ]
