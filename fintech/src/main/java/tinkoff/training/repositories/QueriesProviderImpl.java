@@ -7,7 +7,12 @@ public class QueriesProviderImpl {
     public static final String CITY_ID = "CITY_ID";
     public static final String NAME = "NAME";
     public static final String WEATHER_TYPE = "WEATHER_TYPE";
+    public static final String WEATHER_TYPE_ID = "WEATHER_TYPE_ID";
     public static final String TEMPERATURE = "TEMPERATURE";
+
+    public static final String DATE = "DATE";
+
+    public static final String TIME = "TIME";
     public static final String TYPE = "TYPE";
     public static String ID = "ID";
 

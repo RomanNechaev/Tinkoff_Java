@@ -38,7 +38,7 @@ public class WeatherEntityRepositoryImpl extends CrudRepository<WeatherEntity> {
     }
 
     public WeatherEntity create(WeatherEntity entity) {
-        WeatherEntity weatherEntity = new WeatherEntity(null, entity.getTemperature(), entity.getType());
+        WeatherEntity weatherEntity = new WeatherEntity(null, entity.getTemperature(), entity.getDate(), entity.getTime(), entity.getCity(), entity.getType());
         try (var connection = dataSource.getConnection();
              var statement = connection.prepareStatement(INSERT_WEATHER)) {
             statement.setDouble(1, entity.getTemperature());

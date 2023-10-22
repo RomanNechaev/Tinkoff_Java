@@ -44,7 +44,7 @@ public class WeatherServiceImpl implements WeatherService {
             throw new EntityExistsException("Weather Entity already exists!");
         }
         checkMatchRegionName(city, weatherModel);
-        Weather weather = new Weather(weatherModel.name(), weatherModel.temperatureValue(), weatherModel.date(), weatherModel.time());
+        Weather weather = new Weather(weatherModel.getName(), weatherModel.getTemperatureValue(), weatherModel.getDate(), weatherModel.getTime());
         weatherRepository.save(weather);
         return weather;
     }
@@ -52,10 +52,10 @@ public class WeatherServiceImpl implements WeatherService {
     @Override
     public Weather update(String city, WeatherModel weatherModel) {
         Weather weather = weatherRepository
-                .findByName(weatherModel.name())
+                .findByName(weatherModel.getName())
                 .orElseThrow(() -> new EntityNotFoundException("Entity not found!"));
         checkMatchRegionName(city, weatherModel);
-        return weatherRepository.update(new Weather(weather.getName(), weatherModel.temperatureValue(), weatherModel.date(), weatherModel.time()));
+        return weatherRepository.update(new Weather(weather.getName(), weatherModel.getTemperatureValue(), weatherModel.getDate(), weatherModel.getTime()));
 
     }
 
@@ -70,7 +70,7 @@ public class WeatherServiceImpl implements WeatherService {
     }
 
     private void checkMatchRegionName(String city, WeatherModel weatherModel) {
-        if (!Objects.equals(city, weatherModel.name())) {
+        if (!Objects.equals(city, weatherModel.getName())) {
             throw new NonMatchDataException("Данные названия региона в модели и запросе не совпадают!");
         }
     }
