@@ -6,8 +6,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
 import tinkoff.training.entities.Weather;
+import tinkoff.training.entities.WeatherEntity;
 import tinkoff.training.models.WeatherModel;
 import tinkoff.training.services.WeatherApiService;
 import tinkoff.training.services.WeatherService;
@@ -22,8 +22,8 @@ public class WeatherController {
 
     @GetMapping("/info")
     @RateLimiter(name = "info")
-    public Mono<ResponseEntity<WeatherModel>> getWeatherByCityName(@PathVariable String city) {
-        return weatherApiService.getWeatherByCityName(city).map(ResponseEntity::ok);
+    public ResponseEntity<WeatherEntity> getWeatherByCityName(@PathVariable String city) {
+        return ResponseEntity.ok(weatherApiService.getWeatherByCityName(city));
     }
 
     @Operation(description = "Get current temperature for city",
@@ -32,7 +32,6 @@ public class WeatherController {
                     @ApiResponse(responseCode = "404", description = "City not found")
             }
     )
-
     @GetMapping
     public ResponseEntity<Double> getTemperatureByCityName(@PathVariable String city) {
         return ResponseEntity.ok(weatherService.getWeatherByCityName(city).getTemperatureValue());
