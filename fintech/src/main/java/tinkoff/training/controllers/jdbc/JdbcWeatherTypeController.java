@@ -3,11 +3,11 @@ package tinkoff.training.controllers.jdbc;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tinkoff.training.entities.WeatherEntity;
 import tinkoff.training.entities.WeatherType;
 import tinkoff.training.services.jdbc.JdbcCrudService;
 
 import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("repository/jdbc/type")

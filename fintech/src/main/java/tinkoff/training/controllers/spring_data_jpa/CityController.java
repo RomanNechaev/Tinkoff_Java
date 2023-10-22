@@ -7,6 +7,7 @@ import tinkoff.training.entities.City;
 import tinkoff.training.services.spring_data_jpa.CrudService;
 
 import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("repository/jpa/city")

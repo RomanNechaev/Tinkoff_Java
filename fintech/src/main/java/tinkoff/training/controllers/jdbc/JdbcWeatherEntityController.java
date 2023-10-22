@@ -7,6 +7,7 @@ import tinkoff.training.entities.WeatherEntity;
 import tinkoff.training.services.jdbc.JdbcCrudService;
 
 import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("repository/jdbc/weather")

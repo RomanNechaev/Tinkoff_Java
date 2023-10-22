@@ -1,6 +1,5 @@
 package tinkoff.training.services.jdbc.impl;
 
-import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
