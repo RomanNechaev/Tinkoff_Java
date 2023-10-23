@@ -1,14 +1,14 @@
 package tinkoff.training.services.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tinkoff.training.entities.Weather;
 import tinkoff.training.models.WeatherModel;
 import tinkoff.training.repositories.WeatherRepository;
 import tinkoff.training.services.WeatherService;
-import tinkoff.training.utils.exceptions.EntityExistsException;
-import tinkoff.training.utils.exceptions.EntityNotFoundException;
-import tinkoff.training.utils.exceptions.NonMatchDataException;
+import tinkoff.training.utils.exceptions.application.EntityExistsException;
+import tinkoff.training.utils.exceptions.application.EntityNotFoundException;
+import tinkoff.training.utils.exceptions.application.NonMatchDataException;
 
 import java.util.List;
 import java.util.Map;
@@ -17,14 +17,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class WeatherServiceImpl implements WeatherService {
 
     private final WeatherRepository weatherRepository;
-
-    @Autowired
-    public WeatherServiceImpl(WeatherRepository weatherRepository) {
-        this.weatherRepository = weatherRepository;
-    }
 
     public double getAverageTemperature() {
         return weatherRepository.findAll().stream().map(Weather::getTemperatureValue).collect(Collectors.averagingDouble(x -> x));
