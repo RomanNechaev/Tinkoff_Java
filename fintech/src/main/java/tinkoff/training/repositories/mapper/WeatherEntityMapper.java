@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-import static tinkoff.training.repositories.QueriesProviderImpl.*;
 
 @Component
 public class WeatherEntityMapper extends RepositoryMapper<Weather> {
