@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.scheduler.Schedulers;
 import tinkoff.training.client.WeatherApiClient;
 import tinkoff.training.entities.City;
-import tinkoff.training.entities.WeatherEntity;
+import tinkoff.training.entities.Weather;
 import tinkoff.training.entities.WeatherType;
 import tinkoff.training.services.ExceptionWeatherApiHandler;
 import tinkoff.training.services.WeatherApiService;
@@ -18,11 +18,11 @@ public class WeatherApiServiceImpl implements WeatherApiService {
 
     private final WeatherApiClient weatherApiClient;
     private final ExceptionWeatherApiHandler exceptionWeatherApiHandler;
-    private final CrudService<WeatherEntity> weatherEntityCrudService;
+    private final CrudService<Weather> weatherEntityCrudService;
     private final CrudService<City> cityService;
     private final CrudService<WeatherType> weatherTypeCrudService;
 
-    public WeatherEntity getWeatherByCityName(String name) {
+    public Weather getWeatherByCityName(String name) {
         return weatherApiClient
                 .getCurrentWeather(name)
                 .publishOn(Schedulers.boundedElastic())
@@ -35,9 +35,9 @@ public class WeatherApiServiceImpl implements WeatherApiService {
                     String weatherType = response.getCurrent().getCondition().getWeatherType();
                     WeatherType weatherType1 = weatherTypeCrudService.findByName(weatherType);
                     City city = cityService.findByName(cityName);
-                    WeatherEntity weatherEntity = new WeatherEntity(temperature, lastDateUpdated, lastTimeUpdated, city, weatherType1);
-                    weatherEntityCrudService.create(weatherEntity);
-                    return weatherEntity;
+                    Weather weather = new Weather(temperature, lastDateUpdated, lastTimeUpdated, city, weatherType1);
+                    weatherEntityCrudService.create(weather);
+                    return weather;
                 })
                 .doOnError(e -> exceptionWeatherApiHandler.handle((ApiException) e))
                 .block();

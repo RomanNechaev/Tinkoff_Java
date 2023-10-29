@@ -32,6 +32,10 @@ dependencies {
     implementation("org.liquibase:liquibase-core")
     implementation("com.h2database:h2")
 
+    implementation ("org.mapstruct:mapstruct:1.5.5.Final")
+
+    annotationProcessor ("org.mapstruct:mapstruct-processor:1.5.5.Final")
+
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
     implementation("io.swagger.core.v3:swagger-annotations:2.2.16")
 

@@ -4,6 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tinkoff.training.entities.WeatherType;
+import tinkoff.training.mappers.WeatherMapper;
+import tinkoff.training.mappers.WeatherTypeListMapper;
+import tinkoff.training.mappers.WeatherTypeMapper;
+import tinkoff.training.models.WeatherDto;
+import tinkoff.training.models.WeatherTypeDto;
 import tinkoff.training.services.spring_data_jpa.CrudService;
 
 import java.util.List;
@@ -13,25 +18,30 @@ import java.util.List;
 @RequestMapping("repository/jpa/type")
 public class WeatherTypeController {
     private final CrudService<WeatherType> weatherTypeCrudService;
+    private final WeatherTypeMapper weatherTypeMapper;
+    private final WeatherTypeListMapper weatherTypeListMapper;
 
     @GetMapping
-    public ResponseEntity<List<WeatherType>> getAllCities() {
-        return ResponseEntity.ok(weatherTypeCrudService.findAll());
+    public ResponseEntity<List<WeatherTypeDto>> getAllCities() {
+        List<WeatherTypeDto> weatherDtoList = weatherTypeListMapper.toDTOList(weatherTypeCrudService.findAll());
+        return ResponseEntity.ok(weatherDtoList);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<WeatherType> getCityById(@PathVariable Long id) {
-        return ResponseEntity.ok(weatherTypeCrudService.findById(id));
+    public ResponseEntity<WeatherTypeDto> getCityById(@PathVariable Long id) {
+        return ResponseEntity.ok(weatherTypeMapper.toDTO(weatherTypeCrudService.findById(id)));
     }
 
     @PostMapping
-    public ResponseEntity<WeatherType> create(@RequestBody WeatherType weatherType) {
-        return ResponseEntity.ok(weatherTypeCrudService.create(weatherType));
+    public ResponseEntity<WeatherType> create(@RequestBody WeatherTypeDto weatherTypeDto) {
+        weatherTypeCrudService.create(weatherTypeMapper.toWeatherType(weatherTypeDto));
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<WeatherType> update(@PathVariable Long id, @RequestBody WeatherType weatherType) {
-        return ResponseEntity.ok(weatherTypeCrudService.update(id, weatherType));
+    public ResponseEntity<WeatherType> update(@PathVariable Long id, @RequestBody WeatherTypeDto weatherTypeDto) {
+        weatherTypeCrudService.update(id, weatherTypeMapper.toWeatherType(weatherTypeDto));
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("{id}")

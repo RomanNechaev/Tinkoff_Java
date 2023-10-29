@@ -1,32 +1,31 @@
 package tinkoff.training.repositories.jdbc.impl;
 
 import org.springframework.stereotype.Repository;
-import tinkoff.training.entities.WeatherEntity;
+import tinkoff.training.entities.Weather;
 import tinkoff.training.repositories.jdbc.CrudRepository;
 import tinkoff.training.repositories.jdbc.RepositoryMapper;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
 
-import static tinkoff.training.repositories.QueriesProviderImpl.*;
 
 @Repository
-public class WeatherEntityRepositoryImpl extends CrudRepository<WeatherEntity> {
-    public WeatherEntityRepositoryImpl(DataSource dataSource, RepositoryMapper<WeatherEntity> repositoryMapper) {
+public class WeatherEntityRepositoryImpl extends CrudRepository<Weather> {
+    public WeatherEntityRepositoryImpl(DataSource dataSource, RepositoryMapper<Weather> repositoryMapper) {
         super(dataSource, repositoryMapper);
     }
 
     @Override
-    public WeatherEntity save(WeatherEntity entity) {
+    public Weather save(Weather entity) {
         if (entity.getId() == null) {
             return create(entity);
         } else return update(entity);
     }
 
     @Override
-    public WeatherEntity update(WeatherEntity entity) {
+    public Weather update(Weather entity) {
         try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(UPDATE_WEATHER_BY_ID)) {
+             var statement = connection.prepareStatement("UPDATE WEATHER SET TEMPERATURE = ?, CITY_ID = ?, WEATHER_TYPE_ID = ? WHERE ID = ?")) {
             statement.setLong(1, entity.getId());
             statement.setDouble(2, entity.getTemperature());
             statement.setObject(3, entity.getType());
@@ -37,33 +36,33 @@ public class WeatherEntityRepositoryImpl extends CrudRepository<WeatherEntity> {
         }
     }
 
-    public WeatherEntity create(WeatherEntity entity) {
-        WeatherEntity weatherEntity = new WeatherEntity(null, entity.getTemperature(), entity.getDate(), entity.getTime(), entity.getCity(), entity.getType());
+    public Weather create(Weather entity) {
+        Weather weather = new Weather(null, entity.getTemperature(), entity.getDate(), entity.getTime(), entity.getCity(), entity.getType());
         try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(INSERT_WEATHER)) {
+             var statement = connection.prepareStatement( "INSERT INTO WEATHER(TEMPERATURE,CITY_ID,WEATHER_TYPE_ID) VALUES(?,?,?)")) {
             statement.setDouble(1, entity.getTemperature());
             statement.setObject(2, entity.getType());
             final var resultSet = statement.executeQuery();
             resultSet.next();
-            weatherEntity.setId(resultSet.getLong(ID));
-            return weatherEntity;
+            weather.setId(resultSet.getLong("ID"));
+            return weather;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public String getFindQQuery() {
-        return FIND_WEATHER_BY_ID;
+    public String getFindQuery() {
+        return " SELECT * FROM WEATHER WHERE WEATHER.ID = ?";
     }
 
     @Override
     public String getDeleteQuery() {
-        return DELETE_WEATHER_BY_ID;
+        return  "DELETE FROM WEATHER WHERE ID = ?";
     }
 
     @Override
     public String getFindAllQuery() {
-        return GET_ALL_WEATHER;
+        return "SELECT * FROM WEATHER";
     }
 }

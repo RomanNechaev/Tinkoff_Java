@@ -8,9 +8,6 @@ import tinkoff.training.repositories.jdbc.RepositoryMapper;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
-
-import static tinkoff.training.repositories.QueriesProviderImpl.*;
-
 @Repository
 public class CityRepositoryImpl extends CrudRepository<City> {
 
@@ -30,11 +27,11 @@ public class CityRepositoryImpl extends CrudRepository<City> {
     public City create(City entity) {
         City createdCity = new City(null, entity.getName());
         try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(INSERT_CITY)) {
+             var statement = connection.prepareStatement("INSERT INTO CITY(NAME) VALUES(?)")) {
             statement.setString(1, entity.getName());
             final var resultSet = statement.executeQuery();
             resultSet.next();
-            createdCity.setId(resultSet.getLong(ID));
+            createdCity.setId(resultSet.getLong("ID"));
             return createdCity;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -45,7 +42,7 @@ public class CityRepositoryImpl extends CrudRepository<City> {
     @Override
     public City update(City entity) {
         try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(UPDATE_CITY_BY_ID)) {
+             var statement = connection.prepareStatement("UPDATE CITY SET NAME WHERE ID = ?")) {
             statement.setLong(1, entity.getId());
             statement.setString(2, entity.getName());
             statement.execute();
@@ -56,17 +53,17 @@ public class CityRepositoryImpl extends CrudRepository<City> {
     }
 
     @Override
-    public String getFindQQuery() {
-        return FIND_CITY_BY_ID;
+    public String getFindQuery() {
+        return "SELECT * FROM CITY WHERE CITY.ID = ?";
     }
 
     @Override
     public String getDeleteQuery() {
-        return DELETE_CITY_BY_ID;
+        return "DELETE FROM CITY WHERE ID = ?";
     }
 
     @Override
     public String getFindAllQuery() {
-        return GET_ALL_CITY;
+        return "ELECT * FROM CITY";
     }
 }

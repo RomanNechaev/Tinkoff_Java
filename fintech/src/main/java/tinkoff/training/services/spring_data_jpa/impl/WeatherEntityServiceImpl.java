@@ -4,7 +4,7 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import tinkoff.training.entities.WeatherEntity;
+import tinkoff.training.entities.Weather;
 import tinkoff.training.repositories.spring_data_jpa.WeatherEntityRepositoryJPA;
 import tinkoff.training.services.spring_data_jpa.CrudService;
 
@@ -12,21 +12,21 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class WeatherEntityServiceImpl implements CrudService<WeatherEntity> {
+public class WeatherEntityServiceImpl implements CrudService<Weather> {
     private final WeatherEntityRepositoryJPA weatherEntityRepositoryJPA;
 
     @Override
-    public List<WeatherEntity> findAll() {
+    public List<Weather> findAll() {
         return weatherEntityRepositoryJPA.findAll();
     }
 
     @Override
-    public WeatherEntity findById(Long id) {
+    public Weather findById(Long id) {
         return weatherEntityRepositoryJPA.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
-    public WeatherEntity create(WeatherEntity entity) {
+    public Weather create(Weather entity) {
         if (entity.getId() != null && weatherEntityRepositoryJPA.existsById(entity.getId())) {
             throw new EntityExistsException();
         }
@@ -34,7 +34,7 @@ public class WeatherEntityServiceImpl implements CrudService<WeatherEntity> {
     }
 
     @Override
-    public WeatherEntity update(Long id, WeatherEntity entity) {
+    public Weather update(Long id, Weather entity) {
         if (!weatherEntityRepositoryJPA.existsById(id)) {
             throw new EntityNotFoundException();
         }
@@ -47,7 +47,7 @@ public class WeatherEntityServiceImpl implements CrudService<WeatherEntity> {
     }
 
     @Override
-    public WeatherEntity findByName(String name) {
+    public Weather findByName(String name) {
         return null;
     }
 }

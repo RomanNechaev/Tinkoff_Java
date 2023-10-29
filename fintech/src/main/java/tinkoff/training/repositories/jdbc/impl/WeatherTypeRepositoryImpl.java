@@ -8,7 +8,6 @@ import tinkoff.training.repositories.jdbc.RepositoryMapper;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 
-import static tinkoff.training.repositories.QueriesProviderImpl.*;
 
 @Repository
 public class WeatherTypeRepositoryImpl extends CrudRepository<WeatherType> {
@@ -26,7 +25,7 @@ public class WeatherTypeRepositoryImpl extends CrudRepository<WeatherType> {
     @Override
     public WeatherType update(WeatherType entity) {
         try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(UPDATE_WEATHER_TYPE_BY_ID)) {
+             var statement = connection.prepareStatement( "UPDATE WEATHER_DIRECTORY SET TYPE = ? WHERE ID = ?")) {
             statement.setString(1, entity.getType());
             statement.execute();
             return findById(entity.getId()).orElseThrow();
@@ -38,11 +37,11 @@ public class WeatherTypeRepositoryImpl extends CrudRepository<WeatherType> {
     public WeatherType create(WeatherType weatherType) {
         WeatherType createdWeatherType = new WeatherType(null, weatherType.getType());
         try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(INSERT_WEATHER_TYPE)) {
+             var statement = connection.prepareStatement("INSERT INTO WEATHER_DIRECTORY(TYPE) VALUES (?)")) {
             statement.setString(1, weatherType.getType());
             final var resultSet = statement.executeQuery();
             resultSet.next();
-            createdWeatherType.setId(resultSet.getLong(ID));
+            createdWeatherType.setId(resultSet.getLong("ID"));
             return createdWeatherType;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -50,17 +49,17 @@ public class WeatherTypeRepositoryImpl extends CrudRepository<WeatherType> {
     }
 
     @Override
-    public String getFindQQuery() {
-        return FIND_WEATHER_TYPE_BY_ID;
+    public String getFindQuery() {
+        return "SELECT * FROM WEATHER_DIRECTORY FIND_WEATHER_TYPE_BY_ID";
     }
 
     @Override
     public String getDeleteQuery() {
-        return DELETE_WEATHER_TYPE_BY_ID;
+        return "DELETE FROM WEATHER_DIRECTORY WHERE ID = ?";
     }
 
     @Override
     public String getFindAllQuery() {
-        return GET_ALL_FROM_WEATHER_DIRECTORY;
+        return "SELECT * FROM WEATHER_DIRECTORY";
     }
 }

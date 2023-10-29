@@ -2,7 +2,7 @@ package tinkoff.training.repositories.mapper;
 
 import org.springframework.stereotype.Component;
 import tinkoff.training.entities.City;
-import tinkoff.training.entities.WeatherEntity;
+import tinkoff.training.entities.Weather;
 import tinkoff.training.entities.WeatherType;
 import tinkoff.training.repositories.jdbc.RepositoryMapper;
 
@@ -14,24 +14,24 @@ import java.util.List;
 import static tinkoff.training.repositories.QueriesProviderImpl.*;
 
 @Component
-public class WeatherEntityMapper extends RepositoryMapper<WeatherEntity> {
+public class WeatherEntityMapper extends RepositoryMapper<Weather> {
     @Override
-    public WeatherEntity convertToEntity(ResultSet resultSet) {
+    public Weather convertToEntity(ResultSet resultSet) {
         try {
-            return new WeatherEntity(resultSet.getLong(ID),
-                    resultSet.getDouble(TEMPERATURE),
-                    resultSet.getString(DATE),
-                    resultSet.getString(TIME),
-                    (City) resultSet.getObject(CITY_ID),
-                    (WeatherType) resultSet.getObject(WEATHER_TYPE_ID));
+            return new Weather(resultSet.getLong("ID"),
+                    resultSet.getDouble("TEMPERATURE"),
+                    resultSet.getString("DATE"),
+                    resultSet.getString("TIME"),
+                    (City) resultSet.getObject("CITY_ID"),
+                    (WeatherType) resultSet.getObject("WEATHER_TYPE_ID"));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public List<WeatherEntity> convertToListEntity(ResultSet resultSet) {
-        LinkedList<WeatherEntity> result = new LinkedList<>();
+    public List<Weather> convertToListEntity(ResultSet resultSet) {
+        LinkedList<Weather> result = new LinkedList<>();
         while (true) {
             try {
                 if (!resultSet.next()) break;

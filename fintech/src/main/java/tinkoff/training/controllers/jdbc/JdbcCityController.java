@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tinkoff.training.entities.City;
+import tinkoff.training.mappers.CityListMapper;
+import tinkoff.training.mappers.CityMapper;
+import tinkoff.training.models.CityDto;
 import tinkoff.training.services.jdbc.JdbcCrudService;
 
 import java.util.List;
@@ -13,25 +16,30 @@ import java.util.List;
 @RequestMapping("repository/jdbc/city")
 public class JdbcCityController {
     private final JdbcCrudService<City> jdbcCrudService;
+    private final CityMapper cityMapper;
+    private final CityListMapper cityListMapper;
 
     @GetMapping
-    public ResponseEntity<List<City>> getAllCities() {
-        return ResponseEntity.ok(jdbcCrudService.findAll());
+    public ResponseEntity<List<CityDto>> getAllCities() {
+        List<CityDto> cityDtoList = cityListMapper.toDTOList(jdbcCrudService.findAll());
+        return ResponseEntity.ok(cityDtoList);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<City> getCityById(@PathVariable Long id) {
-        return ResponseEntity.ok(jdbcCrudService.findById(id));
+    public ResponseEntity<CityDto> getCityById(@PathVariable Long id) {
+        return ResponseEntity.ok(cityMapper.toDTO(jdbcCrudService.findById(id)));
     }
 
     @PostMapping
-    public ResponseEntity<City> create(@RequestBody City city) {
-        return ResponseEntity.ok(jdbcCrudService.create(city));
+    public ResponseEntity<CityDto> create(@RequestBody CityDto cityDto) {
+        jdbcCrudService.create(cityMapper.toCity(cityDto));
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<City> update(@PathVariable Long id, @RequestBody City city) {
-        return ResponseEntity.ok(jdbcCrudService.update(id, city));
+    public ResponseEntity<CityDto> update(@PathVariable Long id, @RequestBody CityDto cityDto) {
+        jdbcCrudService.update(id, cityMapper.toCity(cityDto));
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("{id}")

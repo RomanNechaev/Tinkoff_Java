@@ -1,0 +1,141 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "create_table_city",
+        "author": "romenka",
+        "changes": [
+          {
+            "createTable": {
+              "tableName": "city",
+              "columns": [
+                {
+                  "column": {
+                    "name": "id",
+                    "type": "BIGINT",
+                    "autoIncrement": true,
+                    "constraints": {
+                      "primaryKey": true
+                    }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "name",
+                    "type": "varchar(20)",
+                    "constraints": {
+                      "unique": true
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "create_table_weather_directory",
+        "author": "romenka",
+        "changes": [
+          {
+            "createTable": {
+              "tableName": "weather_directory",
+              "columns": [
+                {
+                  "column": {
+                    "name": "id",
+                    "type": "BIGINT",
+                    "autoIncrement": true,
+                    "constraints": {
+                      "primaryKey": true
+                    }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "type",
+                    "type": "varchar(20)",
+                    "constraints": {
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "create_table_weather",
+        "author": "romenka",
+        "changes": [
+          {
+            "createTable": {
+              "tableName": "weather",
+              "columns": [
+                {
+                  "column": {
+                    "name": "id",
+                    "type": "BIGINT",
+                    "autoIncrement": true,
+                    "constraints": {
+                      "primaryKey": true
+                    }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "temperature",
+                    "type": "double"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "city_id",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "weather_type_id",
+                    "type": "BIGINT"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "add_column",
+        "author": "romenka",
+        "changes": [
+          {
+            "addColumn": {
+              "columns": [
+                {
+                  "column": {
+                    "name": "date",
+                    "type": "DATE"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "time",
+                    "type": "TIME"
+                  }
+                }
+              ],
+              "tableName": "weather"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

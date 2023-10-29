@@ -22,22 +22,22 @@ public class WeatherRepositoryImpl implements WeatherRepository {
 
     @Override
     public Optional<Weather> findByName(String name) {
-        return weatherList.stream().filter(x -> Objects.equals(x.getName(), name)).findFirst();
+        return weatherList.stream().filter(x -> Objects.equals(x.getCity(), name)).findFirst();
     }
 
     @Override
     public void deleteByName(String name) {
-        weatherList.removeIf(x -> Objects.equals(x.getName(), name));
+        weatherList.removeIf(x -> Objects.equals(x.getCity(), name));
     }
 
     @Override
     public boolean existsByName(String name) {
-        return weatherList.stream().anyMatch(x -> Objects.equals(x.getName(), name));
+        return weatherList.stream().anyMatch(x -> Objects.equals(x.getCity(), name));
     }
 
     @Override
     public Weather save(Weather weather) {
-        if (weather.getName() == null) {
+        if (weather.getCity() == null) {
             throw new IllegalStateException("Region name must be not null!");
         }
         weatherList.add(weather);
@@ -46,10 +46,10 @@ public class WeatherRepositoryImpl implements WeatherRepository {
 
     @Override
     public Weather update(Weather weather) {
-        if (!existsByName(weather.getName())) {
+        if (!existsByName(weather.getCity().getName())) {
             throw new EntityNotFoundException("Entity not found!");
         }
-        Weather oldWeather = findByName(weather.getName()).get();
+        Weather oldWeather = findByName(weather.getCity().getName()).get();
         int index = weatherList.indexOf(oldWeather);
         weatherList.set(index, weather);
         return weather;

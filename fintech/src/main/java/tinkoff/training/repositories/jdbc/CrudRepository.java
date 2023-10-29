@@ -12,14 +12,14 @@ public abstract class CrudRepository<T> implements QueriesProvider {
     protected final DataSource dataSource;
     protected final RepositoryMapper<T> repositoryMapper;
 
-    protected CrudRepository(DataSource dataSource, RepositoryMapper<T> repositoryMapper) {
+    public CrudRepository(DataSource dataSource, RepositoryMapper<T> repositoryMapper) {
         this.dataSource = dataSource;
         this.repositoryMapper = repositoryMapper;
     }
 
     public Optional<T> findById(Long id) {
         try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(getFindQQuery())) {
+             var statement = connection.prepareStatement(getFindQuery())) {
             statement.setLong(1, id);
             final var resultSet = statement.executeQuery();
             if (resultSet.next()) {

@@ -1,0 +1,27 @@
+{
+  "databaseChangeLog": [
+    {
+      "logicalFilePath": "db/changelog/main_change_log.json"
+    },
+    {
+      "include": {
+        "file": "db/changelog/create_tables_changelog.JSON"
+      }
+    },
+    {
+      "include": {
+        "file": "db/changelog/insert_data_changelog.JSON"
+      }
+    },
+    {
+      "include": {
+        "file": "db/changelog/add_foreign_key_changelog.JSON"
+      }
+    },
+    {
+      "include": {
+        "file": "db/changelog/add_indexes_changelog.JSON"
+      }
+    }
+  ]
+}

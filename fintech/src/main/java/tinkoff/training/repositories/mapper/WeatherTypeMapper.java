@@ -9,15 +9,12 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-import static tinkoff.training.repositories.QueriesProviderImpl.ID;
-import static tinkoff.training.repositories.QueriesProviderImpl.TYPE;
-
 @Component
 public class WeatherTypeMapper extends RepositoryMapper<WeatherType> {
     @Override
     public WeatherType convertToEntity(ResultSet resultSet) {
         try {
-            return new WeatherType(resultSet.getLong(ID), resultSet.getString(TYPE));
+            return new WeatherType(resultSet.getLong("ID"), resultSet.getString("TYPE"));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

@@ -30,7 +30,7 @@ public interface WeatherOperations {
      * @return Map: idToTemperature
      * @see Weather
      */
-    Map<UUID, List<Double>> idToTemperature();
+    Map<Long, List<Double>> idToTemperature();
 
     /**
      * Преобразовать список в Map, у которой ключ - температура, значение - коллекция объектов Weather,
