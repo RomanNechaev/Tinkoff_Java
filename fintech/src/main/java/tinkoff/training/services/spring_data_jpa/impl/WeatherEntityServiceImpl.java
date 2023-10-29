@@ -1,7 +1,7 @@
 package tinkoff.training.services.spring_data_jpa.impl;
 
-import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.EntityNotFoundException;
+import tinkoff.training.utils.exceptions.application.EntityExistsException;
+import tinkoff.training.utils.exceptions.application.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tinkoff.training.entities.Weather;
@@ -22,13 +22,13 @@ public class WeatherEntityServiceImpl implements CrudService<Weather> {
 
     @Override
     public Weather findById(Long id) {
-        return weatherEntityRepositoryJPA.findById(id).orElseThrow(EntityNotFoundException::new);
+        return weatherEntityRepositoryJPA.findById(id).orElseThrow(() -> new EntityExistsException(""));
     }
 
     @Override
     public Weather create(Weather entity) {
         if (entity.getId() != null && weatherEntityRepositoryJPA.existsById(entity.getId())) {
-            throw new EntityExistsException();
+            throw new EntityExistsException("");
         }
         return weatherEntityRepositoryJPA.save(entity);
     }
@@ -36,7 +36,7 @@ public class WeatherEntityServiceImpl implements CrudService<Weather> {
     @Override
     public Weather update(Long id, Weather entity) {
         if (!weatherEntityRepositoryJPA.existsById(id)) {
-            throw new EntityNotFoundException();
+            throw new EntityNotFoundException("");
         }
         return weatherEntityRepositoryJPA.save(entity);
     }
