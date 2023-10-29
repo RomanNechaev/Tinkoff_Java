@@ -22,13 +22,13 @@ public class WeatherEntityServiceImpl implements CrudService<Weather> {
 
     @Override
     public Weather findById(Long id) {
-        return weatherEntityRepositoryJPA.findById(id).orElseThrow(() -> new EntityExistsException(""));
+        return weatherEntityRepositoryJPA.findById(id).orElseThrow(() -> new EntityExistsException("Weather with input id not found!"));
     }
 
     @Override
     public Weather create(Weather entity) {
         if (entity.getId() != null && weatherEntityRepositoryJPA.existsById(entity.getId())) {
-            throw new EntityExistsException("");
+            throw new EntityExistsException("Weather already exists!");
         }
         return weatherEntityRepositoryJPA.save(entity);
     }
@@ -36,7 +36,7 @@ public class WeatherEntityServiceImpl implements CrudService<Weather> {
     @Override
     public Weather update(Long id, Weather entity) {
         if (!weatherEntityRepositoryJPA.existsById(id)) {
-            throw new EntityNotFoundException("");
+            throw new EntityNotFoundException("Weather already exists!");
         }
         return weatherEntityRepositoryJPA.save(entity);
     }
