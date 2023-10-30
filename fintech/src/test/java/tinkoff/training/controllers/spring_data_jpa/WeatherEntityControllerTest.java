@@ -1,4 +1,4 @@
-package integration;
+package tinkoff.training.controllers.spring_data_jpa;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
@@ -9,38 +9,34 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-
 import tinkoff.training.entities.City;
 import tinkoff.training.entities.Weather;
 import tinkoff.training.entities.WeatherType;
-import tinkoff.training.mappers.WeatherListMapper;
 import tinkoff.training.mappers.WeatherMapper;
 import tinkoff.training.models.WeatherDto;
 import tinkoff.training.repositories.spring_data_jpa.WeatherEntityRepositoryJPA;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
-@SpringBootTest
 @AutoConfigureMockMvc
-public class WeatherControllerTest {
+@SpringBootTest
+class WeatherEntityControllerTest {
     @Autowired
     MockMvc mockMvc;
-    WeatherEntityRepositoryJPA weatherEntityRepositoryJPA;
-
-    WeatherMapper weatherMapper;
-    WeatherListMapper weatherListMapper;
+    @Autowired
+    private WeatherEntityRepositoryJPA weatherEntityRepositoryJPA;
+    @Autowired
+    private WeatherMapper weatherMapper;
 
 
     private WeatherDto testWeather1;
     private WeatherDto testWeather2;
-    private WeatherDto testWeather3;
 
     private City testCity1;
     private City testCity2;
@@ -50,6 +46,7 @@ public class WeatherControllerTest {
 
     @BeforeEach
     void setUp() {
+        weatherEntityRepositoryJPA.deleteAll();
         testCity1 = new City(1L, "Perm");
         testCity2 = new City(2L, "Grozny");
         testWeatherType1 = new WeatherType(1L, "cloudy");
@@ -58,17 +55,17 @@ public class WeatherControllerTest {
         testWeather2 = new WeatherDto();
         testWeather1.setId(1L);
         testWeather1.setTemperature(12.4);
-        testWeather1.setDate("12-04-2023");
-        testWeather1.setTime("14:03");
+        testWeather1.setDate("2023-04-19");
+        testWeather1.setTime("14:03:00");
         testWeather1.setCity(testCity1.getName());
         testWeather1.setType(testWeatherType1.getType());
 
-        testWeather1.setId(2L);
-        testWeather1.setTemperature(24.4);
-        testWeather1.setDate("12-08-2023");
-        testWeather1.setTime("19:03");
-        testWeather1.setCity(testCity2.getName());
-        testWeather1.setType(testWeather2.getType());
+        testWeather2.setId(2L);
+        testWeather2.setTemperature(24.4);
+        testWeather2.setDate("2023-08-18");
+        testWeather2.setTime("19:03:00");
+        testWeather2.setCity(testCity2.getName());
+        testWeather2.setType(testWeather2.getType());
     }
 
     @AfterEach
@@ -88,9 +85,9 @@ public class WeatherControllerTest {
                         status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON),
                         jsonPath("$", hasSize(1)),
-                        jsonPath("$[0].id", is(saved.getId().toString())),
-                        jsonPath("$[0].city.name", is(testCity1.getName())),
-                        jsonPath("$[0].type.name", is(testWeatherType1.getType())),
+                        jsonPath("$[0].id", is(Integer.parseInt(Long.toString(saved.getId())))),
+                        jsonPath("$[0].city", is(testCity1.getName())),
+                        jsonPath("$[0].type", is(testWeatherType1.getType())),
                         jsonPath("$[0].temperature", is(testWeather1.getTemperature())),
                         jsonPath("$[0].date", is(testWeather1.getDate())),
                         jsonPath("$[0].time", is(testWeather1.getTime())));
@@ -100,6 +97,7 @@ public class WeatherControllerTest {
     void canGetByIdShouldReturnResponseWeatherWithStatusOk() throws Exception {
         Weather saved = weatherEntityRepositoryJPA.save(weatherMapper.toWeather(testWeather1));
         assertThat(weatherEntityRepositoryJPA.findAll()).hasSize(1);
+        ;
         var requestBuilder = get("/repository/jpa/weather" + "/{id}", saved.getId());
 
         mockMvc.perform(requestBuilder)
@@ -107,13 +105,12 @@ public class WeatherControllerTest {
                 .andExpectAll(
                         status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON),
-                        jsonPath("$", hasSize(1)),
-                        jsonPath("$[0].id", is(saved.getId().toString())),
-                        jsonPath("$[0].city.name", is(testCity1.getName())),
-                        jsonPath("$[0].type.name", is(testWeatherType1.getType())),
-                        jsonPath("$[0].temperature", is(testWeather1.getTemperature())),
-                        jsonPath("$[0].date", is(testWeather1.getDate())),
-                        jsonPath("$[0].time", is(testWeather1.getTime())));
+                        jsonPath("$.id", is(Integer.parseInt(Long.toString(saved.getId())))),
+                        jsonPath("$.city", is(testCity1.getName())),
+                        jsonPath("$.type", is(testWeatherType1.getType())),
+                        jsonPath("$.temperature", is(testWeather1.getTemperature())),
+                        jsonPath("$.date", is(testWeather1.getDate())),
+                        jsonPath("$.time", is(testWeather1.getTime())));
     }
 
     @Test
@@ -126,16 +123,14 @@ public class WeatherControllerTest {
                 .andExpectAll(
                         status().isNotFound(),
                         content().contentType(MediaType.APPLICATION_JSON),
-                        jsonPath("$", hasSize(1)),
-                        jsonPath("$[0].message", is(
+                        jsonPath("$.message", is(
                                 "Weather with input id not found!"
                         ))
                 );
     }
+
     @Test
     void canCreateWeatherShouldReturnEmptyResponseWithStatusOk() throws Exception {
-        weatherEntityRepositoryJPA.save(weatherMapper.toWeather(testWeather1));
-        assertThat(weatherEntityRepositoryJPA.findAll()).hasSize(1);
         String jsonRequest = new ObjectMapper().writeValueAsString(testWeather1);
         var requestBuilder = post("/repository/jpa/weather")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -144,15 +139,15 @@ public class WeatherControllerTest {
         mockMvc.perform(requestBuilder)
 
                 .andExpectAll(
-                        status().isOk(),
-                        content().contentType(MediaType.APPLICATION_JSON)
+                        status().isOk()
                 );
     }
 
     @Test
     void cantCreateExistentWeatherShouldReturnResponseWithStatusBadRequest() throws Exception {
-        weatherEntityRepositoryJPA.save(weatherMapper.toWeather(testWeather1));
+        var saved = weatherEntityRepositoryJPA.save(weatherMapper.toWeather(testWeather1));
         assertThat(weatherEntityRepositoryJPA.findAll()).hasSize(1);
+        testWeather1.setId(saved.getId());
         String jsonRequest = new ObjectMapper().writeValueAsString(testWeather1);
         var requestBuilder = post("/repository/jpa/weather")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -163,8 +158,7 @@ public class WeatherControllerTest {
                 .andExpectAll(
                         status().isNotFound(),
                         content().contentType(MediaType.APPLICATION_JSON),
-                        jsonPath("$", hasSize(1)),
-                        jsonPath("$[0].message", is(
+                        jsonPath("$.message", is(
                                 "Weather already exists!"
                         ))
                 );

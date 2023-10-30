@@ -1,11 +1,12 @@
 package tinkoff.training.repositories;
 
+import org.springframework.stereotype.Repository;
 import tinkoff.training.entities.Weather;
 
 import java.util.List;
 import java.util.Optional;
 
-
+@Repository
 public interface WeatherRepository {
     List<Weather> findAll();
 

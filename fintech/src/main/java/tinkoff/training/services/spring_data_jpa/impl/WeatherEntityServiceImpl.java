@@ -22,7 +22,7 @@ public class WeatherEntityServiceImpl implements CrudService<Weather> {
 
     @Override
     public Weather findById(Long id) {
-        return weatherEntityRepositoryJPA.findById(id).orElseThrow(() -> new EntityExistsException("Weather with input id not found!"));
+        return weatherEntityRepositoryJPA.findById(id).orElseThrow(() -> new EntityNotFoundException("Weather with input id not found!"));
     }
 
     @Override
