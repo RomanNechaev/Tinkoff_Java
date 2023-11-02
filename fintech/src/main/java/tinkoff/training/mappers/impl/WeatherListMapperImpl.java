@@ -8,22 +8,25 @@ import tinkoff.training.mappers.WeatherMapper;
 import tinkoff.training.models.WeatherDto;
 
 import java.util.List;
+
 @Component
 public class WeatherListMapperImpl implements WeatherListMapper {
     private final WeatherMapper weatherMapper;
+
     @Autowired
-    public WeatherListMapperImpl(WeatherMapper weatherMapper){
+    public WeatherListMapperImpl(WeatherMapper weatherMapper) {
         this.weatherMapper = weatherMapper;
     }
+
     @Override
     public List<Weather> toWeatherList(List<WeatherDto> dtos) {
-        if(dtos==null) return null;
+        if (dtos == null) return null;
         return dtos.stream().map(weatherMapper::toWeather).toList();
     }
 
     @Override
     public List<WeatherDto> toDTOList(List<Weather> models) {
-        if(models==null) return null;
+        if (models == null) return null;
         return models.stream().map(weatherMapper::toDTO).toList();
     }
 }

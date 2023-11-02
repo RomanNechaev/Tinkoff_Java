@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tinkoff.training.entities.Weather;
 import tinkoff.training.models.WeatherDto;
-import tinkoff.training.models.WeatherModel;
 import tinkoff.training.services.WeatherApiService;
 import tinkoff.training.services.WeatherService;
 

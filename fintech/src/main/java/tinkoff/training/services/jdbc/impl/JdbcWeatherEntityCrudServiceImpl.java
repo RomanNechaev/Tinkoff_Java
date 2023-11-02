@@ -24,16 +24,23 @@ public class JdbcWeatherEntityCrudServiceImpl implements JdbcCrudService<Weather
 
     @Override
     public Weather create(Weather weather) {
-        weatherEntityCrudRepository.findById(weather.getId()).ifPresent(exception -> {
-            throw new EntityExistsException("Weather entity already exists!");
-        });
-        return weatherEntityCrudRepository.save(weather);
+        DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+        transactionDefinition.setIsolationLevel(TransactionDefinition.ISOLATION_SERIALIZABLE);
+        TransactionStatus transaction = platformTransactionManager.getTransaction(transactionDefinition);
+        if (weather.getId() != null) {
+            weatherEntityCrudRepository.findById(weather.getId()).ifPresent(exception -> {
+                throw new EntityExistsException("Weather entity already exists!");
+            });
+        }
+        Weather saved = weatherEntityCrudRepository.save(weather);
+        platformTransactionManager.commit(transaction);
+        return saved;
     }
 
     @Override
     public Weather update(Long id, Weather weather) {
         DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
-        transactionDefinition.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
+        transactionDefinition.setIsolationLevel(TransactionDefinition.ISOLATION_SERIALIZABLE);
         TransactionStatus transaction = platformTransactionManager.getTransaction(transactionDefinition);
         if (weatherEntityCrudRepository.findById(id).isEmpty()) {
             throw new EntityNotFoundException("Weather not found!");
@@ -45,16 +52,30 @@ public class JdbcWeatherEntityCrudServiceImpl implements JdbcCrudService<Weather
 
     @Override
     public List<Weather> findAll() {
-        return Collections.unmodifiableList(weatherEntityCrudRepository.findAll());
+        DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+        transactionDefinition.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
+        TransactionStatus transaction = platformTransactionManager.getTransaction(transactionDefinition);
+        List<Weather> weatherList = Collections.unmodifiableList(weatherEntityCrudRepository.findAll());
+        platformTransactionManager.commit(transaction);
+        return weatherList;
     }
 
     @Override
     public Weather findById(Long id) {
-        return weatherEntityCrudRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Weather not found!"));
+        DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+        transactionDefinition.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
+        TransactionStatus transaction = platformTransactionManager.getTransaction(transactionDefinition);
+        Weather weather = weatherEntityCrudRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Weather not found!"));
+        platformTransactionManager.commit(transaction);
+        return weather;
     }
 
     @Override
     public void deleteById(Long id) {
+        DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+        transactionDefinition.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
+        TransactionStatus transaction = platformTransactionManager.getTransaction(transactionDefinition);
         weatherEntityCrudRepository.deleteById(id);
+        platformTransactionManager.commit(transaction);
     }
 }

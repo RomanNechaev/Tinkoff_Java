@@ -16,7 +16,7 @@ public class CityMapper extends RepositoryMapper<City> {
     @Override
     public City convertToEntity(ResultSet resultSet) {
         try {
-            return new City(resultSet.getLong("ID"), resultSet.getString("NAME"));
+            return new City(resultSet.getLong("CITY_ID"), resultSet.getString("NAME"));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

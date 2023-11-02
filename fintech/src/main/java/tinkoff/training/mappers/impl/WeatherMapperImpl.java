@@ -5,26 +5,30 @@ import org.springframework.stereotype.Component;
 import tinkoff.training.entities.City;
 import tinkoff.training.entities.Weather;
 import tinkoff.training.entities.WeatherType;
+import tinkoff.training.mappers.CityMapper;
 import tinkoff.training.mappers.WeatherMapper;
+import tinkoff.training.mappers.WeatherTypeMapper;
 import tinkoff.training.models.WeatherDto;
-import tinkoff.training.services.spring_data_jpa.CrudService;
 
 @Component
 public class WeatherMapperImpl implements WeatherMapper {
-    private final CrudService<City> cityCrudService;
-    private final CrudService<WeatherType> weatherTypeCrudService;
+    private final CityMapper cityMapper;
+    private final WeatherTypeMapper weatherTypeMapper;
+
     @Autowired
-    public WeatherMapperImpl(CrudService<City> cityCrudService, CrudService<WeatherType> weatherTypeCrudService){
-        this.cityCrudService = cityCrudService;
-        this.weatherTypeCrudService = weatherTypeCrudService;
+    public WeatherMapperImpl(CityMapper cityMapper, WeatherTypeMapper weatherTypeMapper) {
+        this.cityMapper = cityMapper;
+        this.weatherTypeMapper = weatherTypeMapper;
+
     }
+
     @Override
     public WeatherDto toDTO(Weather weather) {
-        if (weather==null) return null;
+        if (weather == null) return null;
         WeatherDto weatherDto = new WeatherDto();
         weatherDto.setId(weather.getId());
-        weatherDto.setCity(weather.getCity().getName());
-        weatherDto.setType(weather.getType().getType());
+        weatherDto.setCity(cityMapper.toDTO(weather.getCity()));
+        weatherDto.setType(weatherTypeMapper.toDTO(weather.getType()));
         weatherDto.setTime(weather.getTime());
         weatherDto.setDate(weather.getDate());
         weatherDto.setTemperature(weather.getTemperature());
@@ -34,11 +38,11 @@ public class WeatherMapperImpl implements WeatherMapper {
 
     @Override
     public Weather toWeather(WeatherDto weatherDto) {
-        if(weatherDto==null) return null;
+        if (weatherDto == null) return null;
         Weather weather = new Weather();
-        City city = cityCrudService.findByName(weatherDto.getCity());
-        WeatherType weatherType = weatherTypeCrudService.findByName(weatherDto.getType());
-        weather.setId(weather.getId());
+        City city = cityMapper.toCity(weatherDto.getCity());
+        WeatherType weatherType = weatherTypeMapper.toWeatherType(weatherDto.getType());
+        weather.setId(weatherDto.getId());
         weather.setCity(city);
         weather.setTime(weatherDto.getTime());
         weather.setTemperature(weatherDto.getTemperature());

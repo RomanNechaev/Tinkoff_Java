@@ -10,8 +10,9 @@
               "baseColumnNames": "city_id",
               "baseTableName": "weather",
               "constraintName": "fk_city",
-              "referencedColumnNames": "id",
-              "referencedTableName": "city"
+              "referencedColumnNames": "city_id",
+              "referencedTableName": "city",
+              "onDelete": "CASCADE"
             }
           },
           {
@@ -19,8 +20,9 @@
               "baseColumnNames": "weather_type_id",
               "baseTableName": "weather",
               "constraintName": "fk_weather_type",
-              "referencedColumnNames": "id",
-              "referencedTableName": "weather_directory"
+              "referencedColumnNames": "weather_type_id",
+              "referencedTableName": "weather_directory",
+              "onDelete": "CASCADE"
             }
           }
         ]

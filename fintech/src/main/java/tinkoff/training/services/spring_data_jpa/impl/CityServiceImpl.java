@@ -3,6 +3,7 @@ package tinkoff.training.services.spring_data_jpa.impl;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.stereotype.Service;
 import tinkoff.training.entities.City;
 import tinkoff.training.repositories.spring_data_jpa.CityRepositoryJPA;
@@ -15,6 +16,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CityServiceImpl implements CrudService<City> {
     private final CityRepositoryJPA cityRepositoryJPA;
+    private final BeanFactory beanFactory;
 
     @Override
     public List<City> findAll() {
@@ -52,7 +54,7 @@ public class CityServiceImpl implements CrudService<City> {
         Optional<City> city = cityRepositoryJPA.findCityByName(name);
         if (city.isEmpty()) {
             City newCity = new City(name);
-            create(newCity);
+            beanFactory.getBean(CityServiceImpl.class).create(newCity);
             return newCity;
         } else return city.get();
     }

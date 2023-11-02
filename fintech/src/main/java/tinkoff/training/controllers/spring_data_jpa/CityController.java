@@ -7,7 +7,6 @@ import tinkoff.training.entities.City;
 import tinkoff.training.mappers.CityListMapper;
 import tinkoff.training.mappers.CityMapper;
 import tinkoff.training.models.CityDto;
-import tinkoff.training.models.WeatherDto;
 import tinkoff.training.services.spring_data_jpa.CrudService;
 
 import java.util.List;
@@ -19,7 +18,7 @@ public class CityController {
     private final CrudService<City> cityCrudService;
     private final CityMapper cityMapper;
     private final CityListMapper cityListMapper;
-    
+
     @GetMapping
     public ResponseEntity<List<CityDto>> getAllCities() {
         List<CityDto> cityDtoList = cityListMapper.toDTOList(cityCrudService.findAll());
