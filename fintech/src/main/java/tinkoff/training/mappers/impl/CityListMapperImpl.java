@@ -8,22 +8,25 @@ import tinkoff.training.mappers.CityMapper;
 import tinkoff.training.models.CityDto;
 
 import java.util.List;
+
 @Component
 public class CityListMapperImpl implements CityListMapper {
     private final CityMapper cityMapper;
+
     @Autowired
-    public CityListMapperImpl(CityMapper cityMapper){
+    public CityListMapperImpl(CityMapper cityMapper) {
         this.cityMapper = cityMapper;
     }
+
     @Override
     public List<City> toCityList(List<CityDto> dtos) {
-        if(dtos==null) return null;
+        if (dtos == null) return null;
         return dtos.stream().map(cityMapper::toCity).toList();
     }
 
     @Override
     public List<CityDto> toDTOList(List<City> models) {
-        if(models==null) return null;
+        if (models == null) return null;
         return models.stream().map(cityMapper::toDTO).toList();
     }
 }

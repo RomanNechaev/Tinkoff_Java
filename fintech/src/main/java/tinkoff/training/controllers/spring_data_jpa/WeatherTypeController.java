@@ -4,10 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tinkoff.training.entities.WeatherType;
-import tinkoff.training.mappers.WeatherMapper;
 import tinkoff.training.mappers.WeatherTypeListMapper;
 import tinkoff.training.mappers.WeatherTypeMapper;
-import tinkoff.training.models.WeatherDto;
 import tinkoff.training.models.WeatherTypeDto;
 import tinkoff.training.services.spring_data_jpa.CrudService;
 

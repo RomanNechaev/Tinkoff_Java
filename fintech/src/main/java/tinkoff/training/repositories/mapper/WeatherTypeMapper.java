@@ -14,7 +14,7 @@ public class WeatherTypeMapper extends RepositoryMapper<WeatherType> {
     @Override
     public WeatherType convertToEntity(ResultSet resultSet) {
         try {
-            return new WeatherType(resultSet.getLong("ID"), resultSet.getString("TYPE"));
+            return new WeatherType(resultSet.getLong("WEATHER_TYPE_ID"), resultSet.getString("TYPE"));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

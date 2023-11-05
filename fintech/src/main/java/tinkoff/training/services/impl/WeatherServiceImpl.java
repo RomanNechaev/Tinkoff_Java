@@ -32,7 +32,7 @@ public class WeatherServiceImpl implements WeatherService {
     }
 
     public List<String> findRegionsAboveTemperature(double temperature) {
-        return weatherRepository.findAll().stream().filter(x -> x.getTemperature() > temperature).map(x->x.getCity().getName()).toList();
+        return weatherRepository.findAll().stream().filter(x -> x.getTemperature() > temperature).map(x -> x.getCity().getName()).toList();
     }
 
     public Map<Long, List<Double>> idToTemperature() {
@@ -50,12 +50,12 @@ public class WeatherServiceImpl implements WeatherService {
         }
         checkMatchRegionName(city, weatherDto);
         WeatherType weatherType = weatherTypeRepositoryJPA
-                .findWeatherTypeByType(weatherDto.getType())
-                .orElse(weatherTypeRepositoryJPA.save(new WeatherType(weatherDto.getType())));
+                .findWeatherTypeByType(weatherDto.getType().getType())
+                .orElse(weatherTypeRepositoryJPA.save(new WeatherType(weatherDto.getType().getType())));
         City cityEntity = cityRepositoryJPA
-                .findCityByName(weatherDto.getCity())
-                .orElse(cityRepositoryJPA.save(new City(weatherDto.getCity())));
-        Weather weather = new Weather(weatherDto.getTemperature(),weatherDto.getDate(),weatherDto.getTime(),cityEntity,weatherType);
+                .findCityByName(weatherDto.getCity().getName())
+                .orElse(cityRepositoryJPA.save(new City(weatherDto.getCity().getName())));
+        Weather weather = new Weather(weatherDto.getTemperature(), weatherDto.getDate(), weatherDto.getTime(), cityEntity, weatherType);
         weatherRepository.save(weather);
         return weather;
     }
@@ -63,13 +63,13 @@ public class WeatherServiceImpl implements WeatherService {
     @Override
     public Weather update(String city, WeatherDto weatherDto) {
         Weather weather = weatherRepository
-                .findByName(weatherDto.getCity())
+                .findByName(weatherDto.getCity().getName())
                 .orElseThrow(() -> new EntityNotFoundException("Entity not found!"));
         checkMatchRegionName(city, weatherDto);
         WeatherType weatherType = weatherTypeRepositoryJPA
-                .findWeatherTypeByType(weatherDto.getType())
-                .orElse(weatherTypeRepositoryJPA.save(new WeatherType(weatherDto.getType())));
-        return weatherRepository.update(new Weather(weatherDto.getTemperature(), weatherDto.getDate(), weatherDto.getTime(),weather.getCity(),weatherType));
+                .findWeatherTypeByType(weatherDto.getType().getType())
+                .orElse(weatherTypeRepositoryJPA.save(new WeatherType(weatherDto.getType().getType())));
+        return weatherRepository.update(new Weather(weatherDto.getTemperature(), weatherDto.getDate(), weatherDto.getTime(), weather.getCity(), weatherType));
 
     }
 

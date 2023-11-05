@@ -11,7 +11,7 @@
               "columns": [
                 {
                   "column": {
-                    "name": "id",
+                    "name": "city_id",
                     "type": "BIGINT",
                     "autoIncrement": true,
                     "constraints": {
@@ -45,7 +45,7 @@
               "columns": [
                 {
                   "column": {
-                    "name": "id",
+                    "name": "weather_type_id",
                     "type": "BIGINT",
                     "autoIncrement": true,
                     "constraints": {

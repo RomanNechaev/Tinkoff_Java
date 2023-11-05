@@ -2,6 +2,10 @@ package tinkoff.training.services.jdbc.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import tinkoff.training.entities.WeatherType;
 import tinkoff.training.repositories.jdbc.CrudRepository;
 import tinkoff.training.services.jdbc.JdbcCrudService;
@@ -15,35 +19,63 @@ import java.util.List;
 public class JdbcWeatherTypeCrudServiceImpl implements JdbcCrudService<WeatherType> {
 
     private final CrudRepository<WeatherType> weatherTypeRepository;
+    private final PlatformTransactionManager platformTransactionManager;
 
     @Override
     public WeatherType create(WeatherType weatherType) {
-        if(weatherTypeRepository.findById(weatherType.getId()).isPresent()){
-            throw new EntityNotFoundException("Weather type already exists!");
+        DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+        transactionDefinition.setIsolationLevel(TransactionDefinition.ISOLATION_SERIALIZABLE);
+        TransactionStatus transaction = platformTransactionManager.getTransaction(transactionDefinition);
+        if (weatherType.getId() != null) {
+            if (weatherTypeRepository.findById(weatherType.getId()).isPresent()) {
+                throw new EntityNotFoundException("Weather type already exists!");
+            }
         }
-        return weatherTypeRepository.save(weatherType);
+        WeatherType saved = weatherTypeRepository.save(weatherType);
+        platformTransactionManager.commit(transaction);
+        return saved;
     }
 
     @Override
     public WeatherType update(Long id, WeatherType weatherType) {
+        DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+        transactionDefinition.setIsolationLevel(TransactionDefinition.ISOLATION_SERIALIZABLE);
+        TransactionStatus transaction = platformTransactionManager.getTransaction(transactionDefinition);
         if (weatherTypeRepository.findById(id).isEmpty()) {
             throw new EntityNotFoundException("Weather Type not found!");
         }
-        return weatherTypeRepository.save(weatherType);
+        WeatherType saved = weatherTypeRepository.save(weatherType);
+        platformTransactionManager.commit(transaction);
+        return saved;
     }
 
     @Override
     public List<WeatherType> findAll() {
-        return Collections.unmodifiableList(weatherTypeRepository.findAll());
+        DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+        transactionDefinition.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
+        TransactionStatus transaction = platformTransactionManager.getTransaction(transactionDefinition);
+        List<WeatherType> weatherTypes = Collections.unmodifiableList(weatherTypeRepository.findAll());
+        platformTransactionManager.commit(transaction);
+        return weatherTypes;
     }
 
     @Override
     public WeatherType findById(Long id) {
-        return weatherTypeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Weather Type not found!"));
+        DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+        transactionDefinition.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
+        TransactionStatus transaction = platformTransactionManager.getTransaction(transactionDefinition);
+        WeatherType weatherType = weatherTypeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Weather Type not found!"));
+        platformTransactionManager.commit(transaction);
+        return weatherType;
     }
 
     @Override
     public void deleteById(Long id) {
+        DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+        transactionDefinition.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
+        TransactionStatus transaction = platformTransactionManager.getTransaction(transactionDefinition);
         weatherTypeRepository.deleteById(id);
+        platformTransactionManager.commit(transaction);
+
     }
 }

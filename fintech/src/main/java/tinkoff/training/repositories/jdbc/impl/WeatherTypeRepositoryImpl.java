@@ -6,7 +6,9 @@ import tinkoff.training.repositories.jdbc.CrudRepository;
 import tinkoff.training.repositories.jdbc.RepositoryMapper;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 
 @Repository
@@ -25,7 +27,7 @@ public class WeatherTypeRepositoryImpl extends CrudRepository<WeatherType> {
     @Override
     public WeatherType update(WeatherType entity) {
         try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement( "UPDATE WEATHER_DIRECTORY SET TYPE = ? WHERE ID = ?")) {
+             var statement = connection.prepareStatement("UPDATE WEATHER_DIRECTORY SET TYPE = ? WHERE WEATHER_TYPE_ID = ?")) {
             statement.setString(1, entity.getType());
             statement.execute();
             return findById(entity.getId()).orElseThrow();
@@ -37,11 +39,14 @@ public class WeatherTypeRepositoryImpl extends CrudRepository<WeatherType> {
     public WeatherType create(WeatherType weatherType) {
         WeatherType createdWeatherType = new WeatherType(null, weatherType.getType());
         try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement("INSERT INTO WEATHER_DIRECTORY(TYPE) VALUES (?)")) {
+             var statement = connection.prepareStatement("INSERT INTO WEATHER_DIRECTORY(TYPE) VALUES (?)", Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, weatherType.getType());
-            final var resultSet = statement.executeQuery();
-            resultSet.next();
-            createdWeatherType.setId(resultSet.getLong("ID"));
+            statement.executeQuery();
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    createdWeatherType.setId(generatedKeys.getLong(1));
+                }
+            }
             return createdWeatherType;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -50,12 +55,12 @@ public class WeatherTypeRepositoryImpl extends CrudRepository<WeatherType> {
 
     @Override
     public String getFindQuery() {
-        return "SELECT * FROM WEATHER_DIRECTORY FIND_WEATHER_TYPE_BY_ID";
+        return "SELECT * FROM WEATHER_DIRECTORY WHERE WEATHER_TYPE_ID = ?";
     }
 
     @Override
     public String getDeleteQuery() {
-        return "DELETE FROM WEATHER_DIRECTORY WHERE ID = ?";
+        return "DELETE FROM WEATHER_DIRECTORY WHERE WEATHER_TYPE_ID = ?";
     }
 
     @Override
