@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("repository/jdbc/city")
+@RequestMapping("/repository/jdbc/city")
 public class JdbcCityController {
     private final JdbcCrudService<City> jdbcCrudService;
     private final CityMapper cityMapper;

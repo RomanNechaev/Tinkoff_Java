@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("repository/jdbc/type")
+@RequestMapping("/repository/jdbc/type")
 public class JdbcWeatherTypeController {
     private final JdbcCrudService<WeatherType> weatherTypeJdbcCrudService;
     private final WeatherTypeMapper weatherTypeMapper;

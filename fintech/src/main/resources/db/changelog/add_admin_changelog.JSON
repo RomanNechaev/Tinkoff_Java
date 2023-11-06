@@ -1,0 +1,37 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "insert-into-user",
+        "author": "romenka",
+        "changes": [
+          {
+            "insert": {
+              "columns": [
+                {
+                  "column": {
+                    "name": "name",
+                    "value": "admin"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "password",
+                    "value": "${admin_password}"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "role",
+                    "value": "ADMIN"
+                  }
+                }
+              ],
+              "tableName": "users"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
