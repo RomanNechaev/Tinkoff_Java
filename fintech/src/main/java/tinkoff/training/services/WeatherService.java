@@ -1,7 +1,7 @@
 package tinkoff.training.services;
 
 import tinkoff.training.entities.Weather;
-import tinkoff.training.models.WeatherModel;
+import tinkoff.training.models.WeatherDto;
 
 /**
  * Функционал для объектов Weather
@@ -12,12 +12,12 @@ public interface WeatherService extends WeatherOperations {
     /**
      * Добавить информацию о городе
      *
-     * @param city               - название города
-     * @param weatherCreateModel - регистрационная модель города
+     * @param city       - название города
+     * @param weatherDto - регистрационная модель города
      * @return объект Weather
      * @see Weather
      */
-    Weather create(String city, WeatherModel weatherCreateModel);
+    Weather create(String city, WeatherDto weatherDto);
 
     /**
      * Удалить город
@@ -38,10 +38,10 @@ public interface WeatherService extends WeatherOperations {
     /**
      * Обновить информацию о городе
      *
-     * @param city               - название города
-     * @param weatherUpdateModel - обновленная информацию о городе
+     * @param city       - название города
+     * @param weatherDto - обновленная информацию о городе
      * @return объект Weather
      * @see Weather
      */
-    Weather update(String city, WeatherModel weatherUpdateModel);
+    Weather update(String city, WeatherDto weatherDto);
 }

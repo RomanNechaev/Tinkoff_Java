@@ -22,6 +22,14 @@ public class WeatherApiResponse {
         private String lastUpdated;
         @JsonProperty("temp_c")
         private double temperatureCelsius;
+        @JsonProperty("condition")
+        private Condition condition;
+
+        @Getter
+        public static class Condition {
+            @JsonProperty("text")
+            private String weatherType;
+        }
     }
 
 }

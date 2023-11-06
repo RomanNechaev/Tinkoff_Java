@@ -1,8 +1,10 @@
 package tinkoff.training.services;
 
-import reactor.core.publisher.Mono;
-import tinkoff.training.models.WeatherModel;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
+import tinkoff.training.entities.Weather;
 
 public interface WeatherApiService {
-    Mono<WeatherModel> getWeatherByCityName(String name);
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    Weather getWeatherByCityName(String name);
 }

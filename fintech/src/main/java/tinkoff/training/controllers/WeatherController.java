@@ -6,9 +6,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
 import tinkoff.training.entities.Weather;
-import tinkoff.training.models.WeatherModel;
+import tinkoff.training.models.WeatherDto;
 import tinkoff.training.services.WeatherApiService;
 import tinkoff.training.services.WeatherService;
 
@@ -22,8 +21,8 @@ public class WeatherController {
 
     @GetMapping("/info")
     @RateLimiter(name = "info")
-    public Mono<ResponseEntity<WeatherModel>> getWeatherByCityName(@PathVariable String city) {
-        return weatherApiService.getWeatherByCityName(city).map(ResponseEntity::ok);
+    public ResponseEntity<Weather> getWeatherByCityName(@PathVariable String city) {
+        return ResponseEntity.ok(weatherApiService.getWeatherByCityName(city));
     }
 
     @Operation(description = "Get current temperature for city",
@@ -32,10 +31,9 @@ public class WeatherController {
                     @ApiResponse(responseCode = "404", description = "City not found")
             }
     )
-
     @GetMapping
     public ResponseEntity<Double> getTemperatureByCityName(@PathVariable String city) {
-        return ResponseEntity.ok(weatherService.getWeatherByCityName(city).getTemperatureValue());
+        return ResponseEntity.ok(weatherService.getWeatherByCityName(city).getTemperature());
     }
 
     @Operation(description = "Add weather data for a specific city",
@@ -48,8 +46,8 @@ public class WeatherController {
     )
 
     @PostMapping
-    public ResponseEntity<Weather> addWeatherByCityName(@PathVariable String city, @RequestBody WeatherModel weatherModel) {
-        return ResponseEntity.ok(weatherService.create(city, weatherModel));
+    public ResponseEntity<Weather> addWeatherByCityName(@PathVariable String city, @RequestBody WeatherDto weatherDto) {
+        return ResponseEntity.ok(weatherService.create(city, weatherDto));
     }
 
     @Operation(description = "Update weather data for a specific city",
@@ -62,8 +60,8 @@ public class WeatherController {
     )
 
     @PutMapping
-    public ResponseEntity<Weather> updateWeatherByCityName(@PathVariable String city, @RequestBody WeatherModel weatherModel) {
-        return ResponseEntity.ok(weatherService.update(city, weatherModel));
+    public ResponseEntity<Weather> updateWeatherByCityName(@PathVariable String city, @RequestBody WeatherDto weatherDto) {
+        return ResponseEntity.ok(weatherService.update(city, weatherDto));
     }
 
     @Operation(description = "Delete weather data for a specific city",

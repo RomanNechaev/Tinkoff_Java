@@ -1,0 +1,32 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "addForeignKeyConstraint",
+        "author": "romenka",
+        "changes": [
+          {
+            "addForeignKeyConstraint": {
+              "baseColumnNames": "city_id",
+              "baseTableName": "weather",
+              "constraintName": "fk_city",
+              "referencedColumnNames": "city_id",
+              "referencedTableName": "city",
+              "onDelete": "CASCADE"
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "baseColumnNames": "weather_type_id",
+              "baseTableName": "weather",
+              "constraintName": "fk_weather_type",
+              "referencedColumnNames": "weather_type_id",
+              "referencedTableName": "weather_directory",
+              "onDelete": "CASCADE"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,239 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "insert-into-city",
+        "author": "romenka",
+        "changes": [
+          {
+            "insert": {
+              "columns": [
+                {
+                  "column": {
+                    "name": "name",
+                    "value": "Ekaterinburg"
+                  }
+                }
+              ],
+              "tableName": "city"
+            }
+          },
+          {
+            "insert": {
+              "columns": [
+                {
+                  "column": {
+                    "name": "name",
+                    "value": "Perm"
+                  }
+                }
+              ],
+              "tableName": "city"
+            }
+          },
+          {
+            "insert": {
+              "columns": [
+                {
+                  "column": {
+                    "name": "name",
+                    "value": "London"
+                  }
+                }
+              ],
+              "tableName": "city"
+            }
+          },
+          {
+            "insert": {
+              "columns": [
+                {
+                  "column": {
+                    "name": "name",
+                    "value": "Grozny"
+                  }
+                }
+              ],
+              "tableName": "city"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "insert-into-weather_directory",
+        "author": "romenka",
+        "changes": [
+          {
+            "insert": {
+              "columns": [
+                {
+                  "column": {
+                    "name": "type",
+                    "value": "sunny"
+                  }
+                }
+              ],
+              "tableName": "weather_directory"
+            }
+          },
+          {
+            "insert": {
+              "columns": [
+                {
+                  "column": {
+                    "name": "type",
+                    "value": "windy"
+                  }
+                }
+              ],
+              "tableName": "weather_directory"
+            }
+          },
+          {
+            "insert": {
+              "columns": [
+                {
+                  "column": {
+                    "name": "type",
+                    "value": "cloudy"
+                  }
+                }
+              ],
+              "tableName": "weather_directory"
+            }
+          },
+          {
+            "insert": {
+              "columns": [
+                {
+                  "column": {
+                    "name": "type",
+                    "value": "rainy"
+                  }
+                }
+              ],
+              "tableName": "weather_directory"
+            }
+          },
+          {
+            "insert": {
+              "columns": [
+                {
+                  "column": {
+                    "name": "type",
+                    "value": "stormy"
+                  }
+                }
+              ],
+              "tableName": "weather_directory"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "insert-into-weather",
+        "author": "romenka",
+        "preConditions": [
+          {
+            "onFail": "WARN"
+          },
+          {
+            "sqlCheck": {
+              "expectedResult": 5,
+              "sql": "SELECT COUNT(*) FROM weather_directory"
+            }
+          }
+        ],
+        "comment": "Check that there are 5 types in weather table before adding a weather.",
+        "changes": [
+          {
+            "insert": {
+              "columns": [
+                {
+                  "column": {
+                    "name": "temperature",
+                    "value": "12.4"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "city_id",
+                    "value": 1
+                  }
+                },
+                {
+                  "column": {
+                    "name": "weather_type_id",
+                    "value": 1
+                  }
+                }
+              ],
+              "tableName": "weather"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "insert-into-weather2",
+        "author": "romenka",
+        "preConditions": [
+          {
+            "onFail": "WARN"
+          },
+          {
+            "sqlCheck": {
+              "expectedResult": 5,
+              "sql": "SELECT COUNT(*) FROM weather_directory"
+            }
+          }
+        ],
+        "comment": "Check that there are 5 types in weather table before adding a weather.",
+        "changes": [
+          {
+            "insert": {
+              "columns": [
+                {
+                  "column": {
+                    "name": "temperature",
+                    "value": "19.0"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "city_id",
+                    "value": 2
+                  }
+                },
+                {
+                  "column": {
+                    "name": "weather_type_id",
+                    "value": 4
+                  }
+                },
+                {
+                  "column": {
+                    "name": "date",
+                    "value": "2023-10-21"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "time",
+                    "value": "17:02"
+                  }
+                }
+              ],
+              "tableName": "weather"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
