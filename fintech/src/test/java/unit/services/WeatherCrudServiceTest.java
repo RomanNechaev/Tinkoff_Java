@@ -35,23 +35,17 @@ public class WeatherCrudServiceTest {
     private Weather testWeather1;
     private Weather testWeather2;
     private Weather testWeather3;
-
     private City testCity1;
-    private City testCity2;
-    private City testCity3;
-
-    private WeatherType testWeatherType1;
-    private WeatherType testWeatherType2;
 
 
     @BeforeEach
     void setUp() {
         weatherService = new WeatherEntityServiceImpl(weatherEntityRepositoryJPA);
         testCity1 = new City(1L, "Perm");
-        testCity2 = new City(2L, "Grozny");
-        testCity3 = new City(3L, "Ekaterinburg");
-        testWeatherType1 = new WeatherType(1L, "cloudy");
-        testWeatherType2 = new WeatherType(2L, "rainy");
+        City testCity2 = new City(2L, "Grozny");
+        City testCity3 = new City(3L, "Ekaterinburg");
+        WeatherType testWeatherType1 = new WeatherType(1L, "cloudy");
+        WeatherType testWeatherType2 = new WeatherType(2L, "rainy");
         testWeather1 = new Weather(1L, 12.4, "12-04-2023", "14:03", testCity1, testWeatherType1);
         testWeather2 = new Weather(2L, 24.4, "12-08-2023", "19:03", testCity2, testWeatherType2);
         testWeather3 = new Weather(3L, -3.0, "12-01-2023", "21:21", testCity3, testWeatherType1);
@@ -90,7 +84,7 @@ public class WeatherCrudServiceTest {
         given(weatherEntityRepositoryJPA.findById(testId)).willReturn(Optional.empty());
         ArgumentCaptor<Long> argument = ArgumentCaptor.forClass(Long.class);
 
-        assertThatThrownBy(() -> weatherService.findById(testId)).isInstanceOf(EntityExistsException.class);
+        assertThatThrownBy(() -> weatherService.findById(testId)).isInstanceOf(EntityNotFoundException.class);
 
         verify(weatherEntityRepositoryJPA, times(1)).findById(argument.capture());
     }

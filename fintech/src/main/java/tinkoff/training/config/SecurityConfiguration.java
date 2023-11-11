@@ -25,7 +25,7 @@ public class SecurityConfiguration {
             "/repository/jpa/city/**",
             "/repository/jpa/weather/**",
             "/repository/jpa/type/**",
-            "/api/weather/{city}"
+            "/api/weather/{city}/**"
     };
 
     @Bean
