@@ -11,6 +11,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "city")
 public class City {
+    @Column(name = "city_id")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

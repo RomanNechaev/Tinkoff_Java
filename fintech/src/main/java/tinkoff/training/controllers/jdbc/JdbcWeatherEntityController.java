@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("repository/jdbc/weather")
+@RequestMapping("/api/repository/jdbc/weather")
 public class JdbcWeatherEntityController {
     private final JdbcCrudService<Weather> jdbcCrudService;
     private final WeatherListMapper weatherListMapper;

@@ -22,6 +22,16 @@
       "include": {
         "file": "db/changelog/add_indexes_changelog.JSON"
       }
+    },
+    {
+      "include": {
+        "file": "db/changelog/add_user_table_changelog.JSON"
+      }
+    },
+    {
+      "include": {
+        "file": "db/changelog/add_admin_changelog.JSON"
+      }
     }
   ]
 }

@@ -13,7 +13,7 @@ public class ExceptionWeatherApiHandler {
     public void handle(ApiException error) {
         if (error.getHttpCode() == 400) {
             switch (error.getWeatherApiError().getApiError().getCode()) {
-                case 1006, 1005, 1004:
+                case 1006, 1005, 1003:
                     throw new IncorrectQueryException(error.getWeatherApiError().getApiError().getMessage());
                 case 9000:
                     throw new NotSupportedEncodingException(error.getWeatherApiError().getApiError().getMessage());

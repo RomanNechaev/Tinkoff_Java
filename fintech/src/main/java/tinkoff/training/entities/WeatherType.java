@@ -15,6 +15,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "weather_directory")
 public class WeatherType implements Serializable {
+    @Column(name = "weather_type_id")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
