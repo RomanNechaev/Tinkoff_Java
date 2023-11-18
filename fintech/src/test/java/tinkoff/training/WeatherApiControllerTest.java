@@ -3,6 +3,7 @@ package tinkoff.training;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -99,10 +100,10 @@ public class WeatherApiControllerTest {
     void canGetCurrentWeatherInfoIfTypeAndCityNotExistsShouldReturnCurrentWeatherWithSaveEntities() throws Exception {
         given(weatherApiClient.getCurrentWeather(CITY_NAME))
                 .willReturn(Mono.just(weatherApiResponse));
-
-        assertThat(weatherEntityRepositoryJPA.findAll()).hasSize(0);
-        assertThat(weatherTypeRepositoryJPA.findAll()).hasSize(0);
-        assertThat(cityRepositoryJPA.findAll()).hasSize(0);
+        Assertions.assertAll(
+                () -> assertThat(weatherEntityRepositoryJPA.findAll()).hasSize(0),
+                () -> assertThat(weatherTypeRepositoryJPA.findAll()).hasSize(0),
+                () -> assertThat(cityRepositoryJPA.findAll()).hasSize(0));
 
         String currentDate = weatherApiResponse.getCurrent().getLastUpdated().split(" ")[0];
 
@@ -116,9 +117,10 @@ public class WeatherApiControllerTest {
                         jsonPath("$.temperature", is(weatherApiResponse.getCurrent().getTemperatureCelsius())),
                         jsonPath("$.type.type", is(weatherApiResponse.getCurrent().getCondition().getWeatherType())));
 
-        assertThat(weatherEntityRepositoryJPA.findAll()).hasSize(1);
-        assertThat(weatherTypeRepositoryJPA.findAll()).hasSize(1);
-        assertThat(cityRepositoryJPA.findAll()).hasSize(1);
+        Assertions.assertAll(
+                () -> assertThat(weatherEntityRepositoryJPA.findAll()).hasSize(1),
+                () -> assertThat(weatherTypeRepositoryJPA.findAll()).hasSize(1),
+                () -> assertThat(cityRepositoryJPA.findAll()).hasSize(1));
     }
 
     @Test
@@ -149,9 +151,9 @@ public class WeatherApiControllerTest {
                         jsonPath("$.date", is(currentDate)),
                         jsonPath("$.temperature", is(weatherApiResponse.getCurrent().getTemperatureCelsius())),
                         jsonPath("$.type.type", is(weatherApiResponse.getCurrent().getCondition().getWeatherType())));
-
-        assertThat(weatherEntityRepositoryJPA.findAll()).hasSize(1);
-        assertThat(cityRepositoryJPA.findAll()).hasSize(1);
+        Assertions.assertAll(
+                () -> assertThat(weatherEntityRepositoryJPA.findAll()).hasSize(1),
+                () -> assertThat(cityRepositoryJPA.findAll()).hasSize(1));
     }
 
     @Test

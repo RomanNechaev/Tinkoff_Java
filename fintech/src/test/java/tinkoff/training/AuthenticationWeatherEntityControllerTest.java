@@ -68,7 +68,7 @@ public class AuthenticationWeatherEntityControllerTest {
     @Test
     @WithAnonymousUser
     void canGetWeatherListWithoutAuthenticationShouldBeDenied() throws Exception {
-        var requestBuilder = get("/repository/jpa/weather");
+        var requestBuilder = get("/api/repository/jpa/weather");
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isUnauthorized());
@@ -80,7 +80,7 @@ public class AuthenticationWeatherEntityControllerTest {
         var saved = weatherEntityRepositoryJPA.save(testWeather);
         assertThat(weatherEntityRepositoryJPA.findAll()).hasSize(1);
         weatherEntityRepositoryJPA.findAll().forEach(x -> System.out.println(x.getCity().getName()));
-        var requestBuilder = get("/repository/jpa/weather");
+        var requestBuilder = get("/api/repository/jpa/weather");
         mockMvc.perform(requestBuilder)
 
                 .andExpectAll(
@@ -101,7 +101,7 @@ public class AuthenticationWeatherEntityControllerTest {
         var saved = weatherEntityRepositoryJPA.save(testWeather);
         assertThat(weatherEntityRepositoryJPA.findAll()).hasSize(1);
         weatherEntityRepositoryJPA.findAll().forEach(x -> System.out.println(x.getCity().getName()));
-        var requestBuilder = get("/repository/jpa/weather");
+        var requestBuilder = get("/api/repository/jpa/weather");
         mockMvc.perform(requestBuilder)
 
                 .andExpectAll(
@@ -122,7 +122,7 @@ public class AuthenticationWeatherEntityControllerTest {
         weatherEntityRepositoryJPA.save(testWeather);
         assertThat(weatherEntityRepositoryJPA.findAll()).hasSize(1);
         System.out.println(testWeather.getId());
-        var requestBuilder = delete("/repository/jpa/weather/" + testWeather.getId());
+        var requestBuilder = delete("/api/repository/jpa/weather/" + testWeather.getId());
         mockMvc.perform(requestBuilder)
 
                 .andExpectAll(
@@ -136,7 +136,7 @@ public class AuthenticationWeatherEntityControllerTest {
     void canDeleteWeathersWithRegularUserShouldBeForbidden() throws Exception {
         weatherEntityRepositoryJPA.save(testWeather);
         assertThat(weatherEntityRepositoryJPA.findAll()).hasSize(1);
-        var requestBuilder = delete("/repository/jpa/weather/" + testWeather.getId());
+        var requestBuilder = delete("/api/repository/jpa/weather/" + testWeather.getId());
         mockMvc.perform(requestBuilder)
                 .andExpectAll(
                         status().isForbidden());
@@ -148,7 +148,7 @@ public class AuthenticationWeatherEntityControllerTest {
     void canCreateWeathersWithRegularUserShouldBeForbidden() throws Exception {
         String jsonRequest = new ObjectMapper().writeValueAsString(weatherMapper.toDTO(testWeather));
         assertThat(weatherEntityRepositoryJPA.findAll()).hasSize(0);
-        var requestBuilder = post("/repository/jpa/weather/")
+        var requestBuilder = post("/api/repository/jpa/weather/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonRequest);
         ;
@@ -164,7 +164,7 @@ public class AuthenticationWeatherEntityControllerTest {
         weatherEntityRepositoryJPA.save(testWeather);
         String jsonRequest = new ObjectMapper().writeValueAsString(weatherMapper.toDTO(testWeather));
         assertThat(weatherEntityRepositoryJPA.findAll()).hasSize(1);
-        var requestBuilder = put("/repository/jpa/weather/")
+        var requestBuilder = put("/api/repository/jpa/weather/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonRequest);
         ;

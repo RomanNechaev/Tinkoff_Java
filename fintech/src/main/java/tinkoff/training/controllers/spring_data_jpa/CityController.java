@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/repository/jpa/city")
+@RequestMapping("/api/repository/jpa/city")
 public class CityController {
     private final CrudService<City> cityCrudService;
     private final CityMapper cityMapper;
