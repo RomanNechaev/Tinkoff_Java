@@ -14,6 +14,7 @@ import tinkoff.training.repositories.spring_data_jpa.WeatherEntityRepositoryJPA;
 import tinkoff.training.services.impl.WeatherServiceImpl;
 import tinkoff.training.services.spring_data_jpa.CrudService;
 import tinkoff.training.services.spring_data_jpa.impl.WeatherEntityServiceImpl;
+import tinkoff.training.utils.cache.WeatherCache;
 import tinkoff.training.utils.exceptions.application.EntityExistsException;
 import tinkoff.training.utils.exceptions.application.EntityNotFoundException;
 
@@ -30,6 +31,8 @@ import static org.mockito.Mockito.*;
 public class WeatherCrudServiceTest {
     @Mock
     WeatherEntityRepositoryJPA weatherEntityRepositoryJPA;
+    @Mock
+    WeatherCache weatherCache;
 
     private CrudService<Weather> weatherService;
     private Weather testWeather1;
@@ -40,7 +43,7 @@ public class WeatherCrudServiceTest {
 
     @BeforeEach
     void setUp() {
-        weatherService = new WeatherEntityServiceImpl(weatherEntityRepositoryJPA);
+        weatherService = new WeatherEntityServiceImpl(weatherEntityRepositoryJPA, weatherCache);
         testCity1 = new City(1L, "Perm");
         City testCity2 = new City(2L, "Grozny");
         City testCity3 = new City(3L, "Ekaterinburg");
@@ -147,6 +150,45 @@ public class WeatherCrudServiceTest {
         ArgumentCaptor<Long> argument = ArgumentCaptor.forClass(Long.class);
 
         verify(weatherEntityRepositoryJPA, times(1)).deleteById(argument.capture());
+        assertThat(argument.getValue()).isEqualTo(testId);
+    }
+
+    @Test
+    void canGetWeatherIfIdExistShouldReturnWeatherAndPutWeatherToCache() {
+        Long testId = testWeather1.getId();
+        given(weatherCache.get(testId)).willReturn(Optional.empty());
+        given(weatherEntityRepositoryJPA.findById(testId)).willReturn(Optional.of(testWeather1));
+        ArgumentCaptor<Long> argument = ArgumentCaptor.forClass(Long.class);
+
+        weatherService.findById(testId);
+
+        verify(weatherCache, times(1)).get(argument.capture());
+
+        assertThat(argument.getValue()).isEqualTo(testId);
+
+        verify(weatherCache, times(1)).put(testId, testWeather1);
+    }
+
+    @Test
+    void canGetWeatherWithExistentIdFromCacheShouldReturnWeatherFromCache() {
+        Long testId = testWeather1.getId();
+        given(weatherCache.get(testId)).willReturn(Optional.of(testWeather1));
+        ArgumentCaptor<Long> argument = ArgumentCaptor.forClass(Long.class);
+        weatherService.findById(testId);
+
+        verify(weatherCache, times(1)).get(argument.capture());
+        verify(weatherEntityRepositoryJPA, times(0)).findById(argument.capture());
+
+        assertThat(argument.getValue()).isEqualTo(testId);
+    }
+
+    @Test
+    void canDeleteIfWeatherContainsInCacheShouldDeleteWeatherFromCache() {
+        Long testId = testCity1.getId();
+        weatherService.deleteById(testId);
+        ArgumentCaptor<Long> argument = ArgumentCaptor.forClass(Long.class);
+
+        verify(weatherCache, times(1)).delete(argument.capture());
         assertThat(argument.getValue()).isEqualTo(testId);
     }
 }

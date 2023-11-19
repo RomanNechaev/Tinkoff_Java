@@ -1,5 +1,6 @@
 package tinkoff.training.services.spring_data_jpa.impl;
 
+import tinkoff.training.utils.cache.WeatherCache;
 import tinkoff.training.utils.exceptions.application.EntityExistsException;
 import tinkoff.training.utils.exceptions.application.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WeatherEntityServiceImpl implements CrudService<Weather> {
     private final WeatherEntityRepositoryJPA weatherEntityRepositoryJPA;
+    private final WeatherCache weatherCache;
 
     @Override
     public List<Weather> findAll() {
@@ -22,7 +24,15 @@ public class WeatherEntityServiceImpl implements CrudService<Weather> {
 
     @Override
     public Weather findById(Long id) {
-        return weatherEntityRepositoryJPA.findById(id).orElseThrow(() -> new EntityNotFoundException("Weather with input id not found!"));
+        var weatherFromCache = weatherCache.get(id);
+        if (weatherFromCache.isPresent()) {
+            return weatherFromCache.get();
+        }
+        Weather weather = weatherEntityRepositoryJPA
+                .findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Weather with input id not found!"));
+        weatherCache.put(id, weather);
+        return weather;
     }
 
     @Override
@@ -38,12 +48,16 @@ public class WeatherEntityServiceImpl implements CrudService<Weather> {
         if (!weatherEntityRepositoryJPA.existsById(id)) {
             throw new EntityNotFoundException("Weather already exists!");
         }
-        return weatherEntityRepositoryJPA.save(entity);
+        weatherCache.delete(id);
+        Weather updatedWeather = weatherEntityRepositoryJPA.save(entity);
+        weatherCache.put(id, updatedWeather);
+        return updatedWeather;
     }
 
     @Override
     public void deleteById(Long id) {
         weatherEntityRepositoryJPA.deleteById(id);
+        weatherCache.delete(id);
     }
 
     @Override
