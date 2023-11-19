@@ -2,8 +2,8 @@ package tinkoff.training.utils.cache;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.util.ReflectionTestUtils;
 import tinkoff.training.entities.City;
 import tinkoff.training.entities.Weather;
 import tinkoff.training.entities.WeatherType;
@@ -11,13 +11,9 @@ import tinkoff.training.entities.WeatherType;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.catchThrowableOfType;
-import static org.mockito.BDDMockito.given;
 
+@TestPropertySource
 class WeatherCacheTest {
-
-    private WeatherCache weatherCache;
-
     private Weather testWeather1;
     private Weather testWeather2;
     private Weather testWeather3;
@@ -26,16 +22,14 @@ class WeatherCacheTest {
     private City testCity3;
 
     private WeatherType testWeatherType;
-
-    @DynamicPropertySource
-    static void registerPgProperties(DynamicPropertyRegistry registry) {
-        registry.add("cache.capacity", () -> 2);
-    }
+    private WeatherCache weatherCache;
 
     @BeforeEach
     void setUp() {
         weatherCache = new WeatherCache();
+        ReflectionTestUtils.setField(weatherCache, "capacity", 2);
 
+        weatherCache.clear();
         testCity1 = new City();
         testCity1.setId(1L);
         testCity1.setName("test");
@@ -88,7 +82,39 @@ class WeatherCacheTest {
         Optional<Weather> result = weatherCache.get(testWeather1.getId());
 
         assertThat(result).isNotPresent();
+    }
 
+    @Test
+    void canGetWithExistentIdShouldReturnWeatherFromCache() {
+        weatherCache.put(1L, testWeather1);
+
+        Optional<Weather> result = weatherCache.get(1L);
+
+        assertThat(result).isEqualTo(Optional.of(testWeather1));
+    }
+
+    @Test
+    void canClearCacheAndGetWeatherShouldReturnEmptyOptional() {
+        weatherCache.put(testWeather1.getId(), testWeather1);
+        weatherCache.put(testWeather2.getId(), testWeather2);
+
+        weatherCache.clear();
+
+        Optional<Weather> result = weatherCache.get(testWeather1.getId());
+
+        assertThat(result).isNotPresent();
+    }
+
+    @Test
+    void canDeleteWeatherFromCache() {
+        weatherCache.put(testWeather1.getId(), testWeather1);
+        weatherCache.put(testWeather2.getId(), testWeather2);
+
+        weatherCache.delete(testWeather1.getId());
+
+        Optional<Weather> result = weatherCache.get(testWeather1.getId());
+
+        assertThat(result).isNotPresent();
     }
 
 }

@@ -191,4 +191,17 @@ public class WeatherCrudServiceTest {
         verify(weatherCache, times(1)).delete(argument.capture());
         assertThat(argument.getValue()).isEqualTo(testId);
     }
+
+    @Test
+    void canUpdateWeatherShouldDeleteWeatherFromCache() {
+        given(weatherEntityRepositoryJPA.existsById(testWeather1.getId())).willReturn(true);
+
+        weatherService.update(testWeather1.getId(), testWeather2);
+
+        ArgumentCaptor<Weather> weatherArgumentCaptor = ArgumentCaptor.forClass(Weather.class);
+
+        verify(weatherEntityRepositoryJPA, times(1)).save(weatherArgumentCaptor.capture());
+        verify(weatherCache, times(1)).delete(testWeather1.getId());
+        assertThat(weatherArgumentCaptor.getValue()).isEqualTo(testWeather2);
+    }
 }
